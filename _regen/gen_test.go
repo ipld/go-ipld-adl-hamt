@@ -69,8 +69,8 @@ func init() {
 			"Link__InteriorNode",
 		},
 		schema.SpawnUnionRepresentationKeyed(map[string]schema.TypeName{ // FUTURE: will probably become kinded, but currently is keyed in this way in upstream spec.
-			"0": "Bucket",
-			"1": "Link__InteriorNode",
+			"0": "Link__InteriorNode",
+			"1": "Bucket",
 		}),
 	))
 	ts.Accumulate(schema.SpawnLinkReference("Link__InteriorNode", // would be implicitly created by fields refering to a `[InteriorNode]` type, but our schema package is not this clever yet, so I've done it by hand.
