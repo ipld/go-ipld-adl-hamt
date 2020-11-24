@@ -2,16 +2,11 @@ package hamt
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/ipld/go-ipld-prime"
 	basicnode "github.com/ipld/go-ipld-prime/node/basic"
 	"github.com/ipld/go-ipld-prime/node/mixins"
-)
-
-var (
-	_ = fmt.Sprint
-	_ = os.Stdout
+	"github.com/multiformats/go-multicodec"
 )
 
 var _ ipld.NodePrototype = (*Prototype)(nil)
@@ -23,23 +18,15 @@ type Prototype struct {
 	// hashAlg requires an extra bool, because the zero value can't be used
 	// as the default behavior, since the code 0x00 is a valid multicodec
 	// code.
-	hashAlg    int
+	hashAlg    multicodec.Code
 	hashAlgSet bool
 }
 
-func (p Prototype) WithHashAlg(code int) Prototype {
+func (p Prototype) WithHashAlg(code multicodec.Code) Prototype {
 	p.hashAlg = code
 	p.hashAlgSet = true
 	return p
 }
-
-// These are some multicodec constants we need to support initially.
-// TODO: replace them with go-multicodec once the new version is ready.
-const (
-	Identity    = 0x00
-	Sha2_256    = 0x12
-	Murmur3_128 = 0x22
-)
 
 func (p Prototype) NewBuilder() ipld.NodeBuilder {
 	return NewBuilder(p)
@@ -49,7 +36,7 @@ var _ ipld.NodeBuilder = (*Builder)(nil)
 
 type Builder struct {
 	bitWidth   int
-	hashAlg    int
+	hashAlg    multicodec.Code
 	bucketSize int
 
 	node Node
@@ -64,7 +51,7 @@ func NewBuilder(proto Prototype) *Builder {
 		proto.BucketSize = 3
 	}
 	if !proto.hashAlgSet {
-		proto.hashAlg = Murmur3_128
+		proto.hashAlg = multicodec.Murmur3_128
 	}
 
 	return &Builder{
@@ -91,12 +78,12 @@ func (b *Builder) BeginMap(sizeHint int) (ipld.MapAssembler, error) {
 		return nil, fmt.Errorf("bitWidth must bee at least 3")
 	}
 	switch b.hashAlg {
-	case Identity, Sha2_256, Murmur3_128:
+	case multicodec.Identity, multicodec.Sha2_256, multicodec.Murmur3_128:
 	default:
 		return nil, fmt.Errorf("unsupported hash algorithm: %x", b.hashAlg)
 	}
 	b.node._HashMapRoot = _HashMapRoot{
-		hashAlg:    _Int{b.hashAlg},
+		hashAlg:    _Int{int(b.hashAlg)},
 		bucketSize: _Int{b.bucketSize},
 		hamt: _HashMapNode{
 			_map: _Bytes{make([]byte, 1<<(b.bitWidth-3))},

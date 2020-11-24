@@ -10,6 +10,7 @@ import (
 
 	"github.com/ipld/go-ipld-prime"
 	"github.com/ipld/go-ipld-prime/node/mixins"
+	"github.com/multiformats/go-multicodec"
 	"github.com/twmb/murmur3"
 )
 
@@ -137,17 +138,17 @@ func (*Node) AsLink() (ipld.Link, error) {
 
 func (n *Node) hashKey(b []byte) []byte {
 	var hasher hash.Hash
-	switch n.hashAlg.x {
-	case Identity:
+	switch c := multicodec.Code(n.hashAlg.x); c {
+	case multicodec.Identity:
 		return b
-	case Sha2_256:
+	case multicodec.Sha2_256:
 		hasher = sha256.New()
-	case Murmur3_128:
+	case multicodec.Murmur3_128:
 		hasher = murmur3.New128()
 	default:
 		// TODO: could we reach this? the builder already handles this
 		// case, but other entry points like Reify don't.
-		panic(fmt.Sprintf("unsupported hash algorithm: %x", n.hashAlg.x))
+		panic(fmt.Sprintf("unsupported hash algorithm: %s", c))
 	}
 	hasher.Write(b)
 	return hasher.Sum(nil)
