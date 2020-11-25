@@ -11,6 +11,7 @@ import (
 	"github.com/ipld/go-ipld-prime"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
+	"github.com/multiformats/go-multicodec"
 )
 
 func TestBasic(t *testing.T) {
@@ -170,11 +171,12 @@ func TestReplace(t *testing.T) {
 func TestLinks(t *testing.T) {
 	t.Parallel()
 
+	// TODO: surely Version and MhLength could be inferred?
 	linkBuilder := cidlink.LinkBuilder{cid.Prefix{
-		Version:  1,    // Usually '1'.
-		Codec:    0x71, // dag-cbor as per multicodec
-		MhType:   0x15, // sha3-384 as per multicodec
-		MhLength: 48,   // sha3-384 hash has a 48-byte sum.
+		Version:  1, // Usually '1'.
+		Codec:    uint64(multicodec.DagCbor),
+		MhType:   uint64(multicodec.Sha3_384),
+		MhLength: 48, // sha3-384 hash has a 48-byte sum.
 	}}
 
 	storage := make(map[ipld.Link][]byte)
