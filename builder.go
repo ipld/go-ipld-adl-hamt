@@ -73,7 +73,7 @@ func Build(builder *Builder) *Node {
 func (b *Builder) Build() ipld.Node { return Build(b) }
 func (b *Builder) Reset()           { b.node = Node{} }
 
-func (b *Builder) BeginMap(sizeHint int) (ipld.MapAssembler, error) {
+func (b *Builder) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 	if b.bitWidth < 3 {
 		return nil, fmt.Errorf("bitWidth must bee at least 3")
 	}
@@ -83,24 +83,24 @@ func (b *Builder) BeginMap(sizeHint int) (ipld.MapAssembler, error) {
 		return nil, fmt.Errorf("unsupported hash algorithm: %x", b.hashAlg)
 	}
 	b.node._HashMapRoot = _HashMapRoot{
-		hashAlg:    _Int{int(b.hashAlg)},
-		bucketSize: _Int{b.bucketSize},
+		hashAlg:    _Int{int64(b.hashAlg)},
+		bucketSize: _Int{int64(b.bucketSize)},
 		hamt: _HashMapNode{
 			_map: _Bytes{make([]byte, 1<<(b.bitWidth-3))},
 		},
 	}
 	return &assembler{node: &b.node}, nil
 }
-func (b *Builder) BeginList(sizeHint int) (ipld.ListAssembler, error) { panic("todo: error?") }
-func (b *Builder) AssignNull() error                                  { panic("todo: error?") }
-func (b *Builder) AssignBool(bool) error                              { panic("todo: error?") }
-func (b *Builder) AssignInt(int) error                                { panic("todo: error?") }
-func (b *Builder) AssignFloat(float64) error                          { panic("todo: error?") }
-func (b *Builder) AssignString(string) error                          { panic("todo: error?") }
-func (b *Builder) AssignBytes([]byte) error                           { panic("todo: error?") }
-func (b *Builder) AssignLink(ipld.Link) error                         { panic("todo: error?") }
-func (b *Builder) AssignNode(ipld.Node) error                         { panic("todo: error?") }
-func (b *Builder) Prototype() ipld.NodePrototype                      { panic("todo: error?") }
+func (b *Builder) BeginList(sizeHint int64) (ipld.ListAssembler, error) { panic("todo: error?") }
+func (b *Builder) AssignNull() error                                    { panic("todo: error?") }
+func (b *Builder) AssignBool(bool) error                                { panic("todo: error?") }
+func (b *Builder) AssignInt(int64) error                                { panic("todo: error?") }
+func (b *Builder) AssignFloat(float64) error                            { panic("todo: error?") }
+func (b *Builder) AssignString(string) error                            { panic("todo: error?") }
+func (b *Builder) AssignBytes([]byte) error                             { panic("todo: error?") }
+func (b *Builder) AssignLink(ipld.Link) error                           { panic("todo: error?") }
+func (b *Builder) AssignNode(ipld.Node) error                           { panic("todo: error?") }
+func (b *Builder) Prototype() ipld.NodePrototype                        { panic("todo: error?") }
 
 type assembler struct {
 	node *Node
@@ -146,11 +146,11 @@ type keyAssembler struct {
 	parent *assembler
 }
 
-func (keyAssembler) BeginMap(sizeHint int) (ipld.MapAssembler, error) {
+func (keyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 	return mixins.BytesAssembler{"bytes"}.BeginMap(0)
 }
 
-func (keyAssembler) BeginList(sizeHint int) (ipld.ListAssembler, error) {
+func (keyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	return mixins.BytesAssembler{"bytes"}.BeginList(0)
 }
 
@@ -162,7 +162,7 @@ func (keyAssembler) AssignBool(bool) error {
 	return mixins.BytesAssembler{"bytes"}.AssignBool(false)
 }
 
-func (keyAssembler) AssignInt(int) error {
+func (keyAssembler) AssignInt(int64) error {
 	return mixins.BytesAssembler{"bytes"}.AssignInt(0)
 }
 
@@ -199,11 +199,11 @@ type valueAssembler struct {
 	parent *assembler
 }
 
-func (valueAssembler) BeginMap(sizeHint int) (ipld.MapAssembler, error) {
+func (valueAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 	return mixins.BytesAssembler{"bytes"}.BeginMap(0)
 }
 
-func (valueAssembler) BeginList(sizeHint int) (ipld.ListAssembler, error) {
+func (valueAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	return mixins.BytesAssembler{"bytes"}.BeginList(0)
 }
 
@@ -220,7 +220,7 @@ func (a valueAssembler) AssignBool(b bool) error {
 	return a.AssignNode(builder.Build())
 }
 
-func (a valueAssembler) AssignInt(i int) error {
+func (a valueAssembler) AssignInt(i int64) error {
 	builder := _Any__ReprPrototype{}.NewBuilder()
 	if err := builder.AssignInt(i); err != nil {
 		return err

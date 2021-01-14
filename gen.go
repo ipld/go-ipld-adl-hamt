@@ -48,15 +48,15 @@ func main() {
 			"List",
 			"Link",
 		},
-		schema.SpawnUnionRepresentationKinded(map[ipld.ReprKind]schema.TypeName{
-			ipld.ReprKind_Bool:   "Bool",
-			ipld.ReprKind_Int:    "Int",
-			ipld.ReprKind_Float:  "Float",
-			ipld.ReprKind_String: "String",
-			ipld.ReprKind_Bytes:  "Bytes",
-			ipld.ReprKind_Map:    "Map",
-			ipld.ReprKind_List:   "List",
-			ipld.ReprKind_Link:   "Link",
+		schema.SpawnUnionRepresentationKinded(map[ipld.Kind]schema.TypeName{
+			ipld.Kind_Bool:   "Bool",
+			ipld.Kind_Int:    "Int",
+			ipld.Kind_Float:  "Float",
+			ipld.Kind_String: "String",
+			ipld.Kind_Bytes:  "Bytes",
+			ipld.Kind_Map:    "Map",
+			ipld.Kind_List:   "List",
+			ipld.Kind_Link:   "Link",
 		}),
 	))
 
@@ -84,9 +84,9 @@ func main() {
 			"Link__HashMapNode",
 			"Bucket",
 		},
-		schema.SpawnUnionRepresentationKinded(map[ipld.ReprKind]schema.TypeName{
-			ipld.ReprKind_Link: "Link__HashMapNode",
-			ipld.ReprKind_List: "Bucket",
+		schema.SpawnUnionRepresentationKinded(map[ipld.Kind]schema.TypeName{
+			ipld.Kind_Link: "Link__HashMapNode",
+			ipld.Kind_List: "Bucket",
 		}),
 	))
 	ts.Accumulate(schema.SpawnLinkReference("Link__HashMapNode",

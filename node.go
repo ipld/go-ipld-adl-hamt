@@ -41,8 +41,8 @@ func (n *Node) bitWidth() int {
 	return bits.TrailingZeros32(uint32(len(n.hamt._map.x))) + 3
 }
 
-func (*Node) ReprKind() ipld.ReprKind {
-	return ipld.ReprKind_Map
+func (*Node) Kind() ipld.Kind {
+	return ipld.Kind_Map
 }
 
 func (n *Node) LookupByString(s string) (ipld.Node, error) {
@@ -63,7 +63,7 @@ func (*Node) MapIterator() ipld.MapIterator {
 	panic("TODO")
 }
 
-func (n *Node) Length() int {
+func (n *Node) Length() int64 {
 	count, err := n.count(&n.hamt, n.bitWidth(), 0)
 	if err != nil {
 		panic(fmt.Sprintf("TODO: what to do with this error: %v", err))
@@ -71,12 +71,12 @@ func (n *Node) Length() int {
 	return count
 }
 
-func (n *Node) count(node *_HashMapNode, bitWidth, depth int) (int, error) {
-	count := 0
+func (n *Node) count(node *_HashMapNode, bitWidth, depth int) (int64, error) {
+	count := int64(0)
 	for _, element := range node.data.x {
 		switch element := element.x.(type) {
 		case *_Bucket:
-			count += len(element.x)
+			count += int64(len(element.x))
 		case *_Link__HashMapNode:
 			// TODO: cache loading links
 			b := _HashMapNode__Prototype{}.NewBuilder()
@@ -96,7 +96,7 @@ func (n *Node) count(node *_HashMapNode, bitWidth, depth int) (int, error) {
 	return count, nil
 }
 
-func (*Node) LookupByIndex(idx int) (ipld.Node, error) {
+func (*Node) LookupByIndex(idx int64) (ipld.Node, error) {
 	return mixins.Map{"hamt.Node"}.LookupByIndex(0)
 }
 
@@ -116,7 +116,7 @@ func (*Node) AsBool() (bool, error) {
 	return mixins.Map{"hamt.Node"}.AsBool()
 }
 
-func (*Node) AsInt() (int, error) {
+func (*Node) AsInt() (int64, error) {
 	return mixins.Map{"hamt.Node"}.AsInt()
 }
 
@@ -171,7 +171,7 @@ func (n *Node) insertEntry(node *_HashMapNode, bitWidth, depth int, hash []byte,
 	// TODO: fix links up the chain too
 	switch element := node.data.x[dataIndex].x.(type) {
 	case *_Bucket:
-		if len(element.x) < n.bucketSize.x {
+		if int64(len(element.x)) < n.bucketSize.x {
 			i, _ := lookupBucketEntry(element.x, entry.key.x)
 			if i >= 0 {
 				// Replace an existing key.

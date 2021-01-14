@@ -27,7 +27,7 @@ func TestBasic(t *testing.T) {
 
 	node := builder.Build()
 
-	qt.Assert(t, node.Length(), qt.Equals, 1)
+	qt.Assert(t, node.Length(), qt.Equals, int64(1))
 
 	val, err := node.LookupByString("foo")
 	qt.Assert(t, err, qt.IsNil)
@@ -45,7 +45,7 @@ func TestTypes(t *testing.T) {
 	}{
 		// {"AssignNull", nil},
 		{"AssignBool", true},
-		{"AssignInt", 3},
+		{"AssignInt", int64(3)},
 		{"AssignFloat", 4.5},
 		{"AssignString", "foo"},
 		{"AssignBytes", []byte{1, 2, 3}},
@@ -69,7 +69,7 @@ func TestTypes(t *testing.T) {
 				err = assembler.AssembleValue().AssignNull()
 			case bool:
 				err = assembler.AssembleValue().AssignBool(value)
-			case int:
+			case int64:
 				err = assembler.AssembleValue().AssignInt(value)
 			case float64:
 				err = assembler.AssembleValue().AssignFloat(value)
@@ -78,7 +78,7 @@ func TestTypes(t *testing.T) {
 			case []byte:
 				err = assembler.AssembleValue().AssignBytes(value)
 			default:
-				t.Fatalf("unexpected value type: %#v\n", value)
+				t.Fatalf("unexpected value type: %T\n", value)
 			}
 			qt.Assert(t, err, qt.IsNil)
 			err = assembler.Finish()
@@ -86,7 +86,7 @@ func TestTypes(t *testing.T) {
 
 			node := builder.Build()
 
-			qt.Assert(t, node.Length(), qt.Equals, 1)
+			qt.Assert(t, node.Length(), qt.Equals, int64(1))
 
 			valNode, err := node.LookupByString(key)
 			qt.Assert(t, err, qt.IsNil)
@@ -97,7 +97,7 @@ func TestTypes(t *testing.T) {
 				qt.Assert(t, valNode.IsNull(), qt.IsTrue)
 			case bool:
 				val, err = valNode.AsBool()
-			case int:
+			case int64:
 				val, err = valNode.AsInt()
 			case float64:
 				val, err = valNode.AsFloat()
@@ -106,7 +106,7 @@ func TestTypes(t *testing.T) {
 			case []byte:
 				val, err = valNode.AsBytes()
 			default:
-				t.Fatalf("unexpected value type: %#v\n", value)
+				t.Fatalf("unexpected value type: %T\n", value)
 			}
 
 			qt.Assert(t, err, qt.IsNil)
@@ -122,8 +122,8 @@ func TestLargeBuckets(t *testing.T) {
 	assembler, err := builder.BeginMap(0)
 	qt.Assert(t, err, qt.IsNil)
 
-	const number = 100
-	for i := 0; i < number; i++ {
+	const number = int64(100)
+	for i := int64(0); i < number; i++ {
 		s := fmt.Sprintf("%02d", i)
 		qt.Assert(t, assembler.AssembleKey().AssignString(s), qt.IsNil)
 		qt.Assert(t, assembler.AssembleValue().AssignString(s), qt.IsNil)
@@ -134,7 +134,7 @@ func TestLargeBuckets(t *testing.T) {
 
 	qt.Assert(t, node.Length(), qt.Equals, number)
 
-	for i := 0; i < number; i++ {
+	for i := int64(0); i < number; i++ {
 		s := fmt.Sprintf("%02d", i)
 		val, err := node.LookupByString(s)
 		qt.Assert(t, err, qt.IsNil)
@@ -159,7 +159,7 @@ func TestReplace(t *testing.T) {
 
 	node := builder.Build()
 
-	qt.Assert(t, node.Length(), qt.Equals, 1)
+	qt.Assert(t, node.Length(), qt.Equals, int64(1))
 
 	val, err := node.LookupByString("foo")
 	qt.Assert(t, err, qt.IsNil)
@@ -172,7 +172,7 @@ func TestLinks(t *testing.T) {
 	t.Parallel()
 
 	// TODO: surely Version and MhLength could be inferred?
-	linkBuilder := cidlink.LinkBuilder{cid.Prefix{
+	linkBuilder := cidlink.LinkBuilder{Prefix: cid.Prefix{
 		Version:  1, // Usually '1'.
 		Codec:    uint64(multicodec.DagCbor),
 		MhType:   uint64(multicodec.Sha3_384),
@@ -197,8 +197,8 @@ func TestLinks(t *testing.T) {
 	assembler, err := builder.BeginMap(0)
 	qt.Assert(t, err, qt.IsNil)
 
-	const number = 20
-	for i := 0; i < number; i++ {
+	const number = int64(20)
+	for i := int64(0); i < number; i++ {
 		s := fmt.Sprintf("%02d", i)
 		qt.Assert(t, assembler.AssembleKey().AssignString(s), qt.IsNil)
 		qt.Assert(t, assembler.AssembleValue().AssignString(s), qt.IsNil)
@@ -208,7 +208,7 @@ func TestLinks(t *testing.T) {
 
 	qt.Assert(t, node.Length(), qt.Equals, number)
 
-	for i := 0; i < number; i++ {
+	for i := int64(0); i < number; i++ {
 		s := fmt.Sprintf("%02d", i)
 		val, err := node.LookupByString(s)
 		qt.Assert(t, err, qt.IsNil)
