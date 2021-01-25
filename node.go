@@ -59,8 +59,94 @@ func (*Node) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	panic("TODO")
 }
 
-func (*Node) MapIterator() ipld.MapIterator {
-	panic("TODO")
+func (n *Node) MapIterator() ipld.MapIterator {
+	return &nodeIterator{nodeIteratorStep: nodeIteratorStep{node: &n.hamt}}
+}
+
+type nodeIteratorStep struct {
+	node *_HashMapNode
+
+	mapIndex int
+
+	bucket      *_Bucket
+	bucketIndex int
+}
+
+type nodeIterator struct {
+	parents []nodeIteratorStep
+
+	nodeIteratorStep
+
+	next *_BucketEntry
+}
+
+func (t *nodeIterator) Done() bool {
+	if t.bucket != nil {
+		// We are iterating over a bucket.
+		if t.bucketIndex < len(t.bucket.x) {
+			t.next = &t.bucket.x[t.bucketIndex]
+			t.bucketIndex++
+			return false
+		}
+		// We've done all entries in this bucket.
+		// Continue to the next element.
+		t.bucket = nil
+		t.bucketIndex = 0
+	}
+
+	// We are not in the middle of a sub-node or bucket.
+	// Find the next bit set in the bitmap.
+	bitmap := t.node._map.x
+	found := false
+	for t.mapIndex < len(bitmap)*8 {
+		if bitsetGet(bitmap, t.mapIndex) == true {
+			found = true
+			break
+		}
+		t.mapIndex++
+	}
+
+	if !found {
+		// The rest of the elements are all empty.
+		// If we're in a sub-node, continue iterating the parent.
+		// Otherwise, we're done.
+		if len(t.parents) == 0 {
+			return true
+		}
+		parent := t.parents[len(t.parents)-1]
+		t.parents = t.parents[:len(t.parents)-1]
+		t.nodeIteratorStep = parent
+		return t.Done()
+	}
+
+	dataIndex := onesCountRange(t.node._map.x, t.mapIndex)
+	// We found an element; make sure we don't iterate over it again.
+	t.mapIndex++
+
+	switch element := t.node.data.x[dataIndex].x.(type) {
+	case *_Bucket:
+		t.bucket = element
+		t.bucketIndex = 1
+
+		t.next = &element.x[0]
+		return false
+	default:
+		panic(fmt.Sprintf("unexpected element type: %T", element))
+	}
+}
+
+func (t *nodeIterator) Next() (key, value ipld.Node, _ error) {
+	if t.next == nil {
+		return nil, nil, ipld.ErrIteratorOverread{}
+	}
+	// Bits of ipld-prime expect map keys to be strings.
+	// By design, our HAMT uses arbitrary bytes as keys.
+	// Lucky for us, in Go a string can still represent arbitrary bytes.
+	// So for now, return the key as a String node.
+	// TODO: revisit this if the state of pathing with mixed kind keys advances.
+	key = (&_String{x: string(t.next.key.x)}).Representation()
+	value = t.next.value.Representation()
+	return key, value, nil
 }
 
 func (n *Node) Length() int64 {

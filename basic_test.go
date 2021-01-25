@@ -91,28 +91,33 @@ func TestTypes(t *testing.T) {
 			valNode, err := node.LookupByString(key)
 			qt.Assert(t, err, qt.IsNil)
 
-			var val interface{}
-			switch value := test.value.(type) {
-			case nil:
-				qt.Assert(t, valNode.IsNull(), qt.IsTrue)
-			case bool:
-				val, err = valNode.AsBool()
-			case int64:
-				val, err = valNode.AsInt()
-			case float64:
-				val, err = valNode.AsFloat()
-			case string:
-				val, err = valNode.AsString()
-			case []byte:
-				val, err = valNode.AsBytes()
-			default:
-				t.Fatalf("unexpected value type: %T\n", value)
-			}
-
-			qt.Assert(t, err, qt.IsNil)
+			val := basicValue(t, valNode)
 			qt.Assert(t, val, qt.DeepEquals, test.value)
 		})
 	}
+}
+
+func basicValue(t *testing.T, node ipld.Node) interface{} {
+	var val interface{}
+	var err error
+	switch kind := node.Kind(); kind {
+	case ipld.Kind_Null:
+		return nil
+	case ipld.Kind_Bool:
+		val, err = node.AsBool()
+	case ipld.Kind_Int:
+		val, err = node.AsInt()
+	case ipld.Kind_Float:
+		val, err = node.AsFloat()
+	case ipld.Kind_String:
+		val, err = node.AsString()
+	case ipld.Kind_Bytes:
+		val, err = node.AsBytes()
+	default:
+		t.Fatalf("node does not have a basic kind: %v\n", kind)
+	}
+	qt.Assert(t, err, qt.IsNil)
+	return val
 }
 
 func TestLargeBuckets(t *testing.T) {
@@ -216,4 +221,47 @@ func TestLinks(t *testing.T) {
 		qt.Assert(t, err, qt.IsNil)
 		qt.Assert(t, valStr, qt.Equals, s)
 	}
+}
+
+func TestIterator(t *testing.T) {
+	t.Parallel()
+
+	builder := Prototype{}.NewBuilder()
+	assembler, err := builder.BeginMap(0)
+	qt.Assert(t, err, qt.IsNil)
+
+	const number = int64(50)
+	seen := make(map[string]int)
+	for i := int64(0); i < number; i++ {
+		key := fmt.Sprintf("key-%02d", i)
+		value := fmt.Sprintf("value-%02d", i)
+		qt.Assert(t, assembler.AssembleKey().AssignString(key), qt.IsNil)
+		qt.Assert(t, assembler.AssembleValue().AssignString(value), qt.IsNil)
+		seen[key] = 1
+	}
+	qt.Assert(t, assembler.Finish(), qt.IsNil)
+
+	node := builder.Build()
+
+	qt.Assert(t, node.Length(), qt.Equals, number)
+
+	gotNumber := int64(0)
+	iter := node.MapIterator()
+	for !iter.Done() {
+		keyNode, _, err := iter.Next()
+		qt.Assert(t, err, qt.IsNil)
+		if gotNumber++; gotNumber >= number*2 {
+			t.Logf("stopping iteration as it looks like an endless loop")
+			break
+		}
+		key := basicValue(t, keyNode).(string)
+		if seen[key] == 0 {
+			t.Fatalf("unexpected key: %q", key)
+		}
+		if seen[key] > 1 {
+			t.Fatalf("duplicate key: %q", key)
+		}
+		seen[key] = seen[key] + 1
+	}
+	qt.Assert(t, gotNumber, qt.Equals, number)
 }
