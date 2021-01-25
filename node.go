@@ -183,11 +183,11 @@ func (n *Node) count(node *_HashMapNode, bitWidth, depth int) (int64, error) {
 }
 
 func (*Node) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.Node"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.Node"}.LookupByIndex(0)
 }
 
 func (*Node) ListIterator() ipld.ListIterator {
-	return mixins.Map{"hamt.Node"}.ListIterator()
+	return mixins.Map{TypeName: "hamt.Node"}.ListIterator()
 }
 
 func (*Node) IsAbsent() bool {
@@ -199,27 +199,27 @@ func (*Node) IsNull() bool {
 }
 
 func (*Node) AsBool() (bool, error) {
-	return mixins.Map{"hamt.Node"}.AsBool()
+	return mixins.Map{TypeName: "hamt.Node"}.AsBool()
 }
 
 func (*Node) AsInt() (int64, error) {
-	return mixins.Map{"hamt.Node"}.AsInt()
+	return mixins.Map{TypeName: "hamt.Node"}.AsInt()
 }
 
 func (*Node) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.Node"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.Node"}.AsFloat()
 }
 
 func (*Node) AsString() (string, error) {
-	return mixins.Map{"hamt.Node"}.AsString()
+	return mixins.Map{TypeName: "hamt.Node"}.AsString()
 }
 
 func (*Node) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.Node"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.Node"}.AsBytes()
 }
 
 func (*Node) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.Node"}.AsLink()
+	return mixins.Map{TypeName: "hamt.Node"}.AsLink()
 }
 
 func (n *Node) hashKey(b []byte) []byte {

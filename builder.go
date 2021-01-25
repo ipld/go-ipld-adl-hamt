@@ -147,27 +147,27 @@ type keyAssembler struct {
 }
 
 func (keyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.BytesAssembler{"bytes"}.BeginMap(0)
+	return mixins.BytesAssembler{TypeName: "bytes"}.BeginMap(0)
 }
 
 func (keyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.BytesAssembler{"bytes"}.BeginList(0)
+	return mixins.BytesAssembler{TypeName: "bytes"}.BeginList(0)
 }
 
 func (keyAssembler) AssignNull() error {
-	return mixins.BytesAssembler{"bytes"}.AssignNull()
+	return mixins.BytesAssembler{TypeName: "bytes"}.AssignNull()
 }
 
 func (keyAssembler) AssignBool(bool) error {
-	return mixins.BytesAssembler{"bytes"}.AssignBool(false)
+	return mixins.BytesAssembler{TypeName: "bytes"}.AssignBool(false)
 }
 
 func (keyAssembler) AssignInt(int64) error {
-	return mixins.BytesAssembler{"bytes"}.AssignInt(0)
+	return mixins.BytesAssembler{TypeName: "bytes"}.AssignInt(0)
 }
 
 func (keyAssembler) AssignFloat(float64) error {
-	return mixins.BytesAssembler{"bytes"}.AssignFloat(0)
+	return mixins.BytesAssembler{TypeName: "bytes"}.AssignFloat(0)
 }
 
 func (a keyAssembler) AssignString(s string) error {
@@ -180,7 +180,7 @@ func (a keyAssembler) AssignBytes(b []byte) error {
 }
 
 func (keyAssembler) AssignLink(ipld.Link) error {
-	return mixins.BytesAssembler{"bytes"}.AssignLink(nil)
+	return mixins.BytesAssembler{TypeName: "bytes"}.AssignLink(nil)
 }
 
 func (a keyAssembler) AssignNode(v ipld.Node) error {
@@ -200,11 +200,11 @@ type valueAssembler struct {
 }
 
 func (valueAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.BytesAssembler{"bytes"}.BeginMap(0)
+	return mixins.BytesAssembler{TypeName: "bytes"}.BeginMap(0)
 }
 
 func (valueAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.BytesAssembler{"bytes"}.BeginList(0)
+	return mixins.BytesAssembler{TypeName: "bytes"}.BeginList(0)
 }
 
 func (a valueAssembler) AssignNull() error {
@@ -253,7 +253,7 @@ func (a valueAssembler) AssignBytes(b []byte) error {
 }
 
 func (valueAssembler) AssignLink(ipld.Link) error {
-	return mixins.BytesAssembler{"bytes"}.AssignLink(nil)
+	return mixins.BytesAssembler{TypeName: "bytes"}.AssignLink(nil)
 }
 
 func (a valueAssembler) AssignNode(v ipld.Node) error {
