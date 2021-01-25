@@ -3,6 +3,7 @@ module github.com/ipld/go-ipld-adl-hamt
 go 1.14
 
 require (
+	github.com/filecoin-project/go-hamt-ipld/v3 v3.0.0-20201223215115-47873c31a853
 	github.com/frankban/quicktest v1.11.3
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipld/go-ipld-prime v0.7.0
@@ -13,6 +14,7 @@ require (
 	github.com/multiformats/go-varint v0.0.6 // indirect
 	github.com/polydawn/refmt v0.0.0-20201211092308-30ac6d18308e // indirect
 	github.com/twmb/murmur3 v1.1.5
+	github.com/whyrusleeping/cbor-gen v0.0.0-20200806213330-63aa96ca5488
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
 	golang.org/x/sys v0.0.0-20210113181707-4bcb84eeeb78 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
