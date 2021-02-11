@@ -15,5 +15,16 @@ import (
 // or using Schemas to denote where the HAMT should appear (in which case
 // loading data while using the schema should automatically reify the HAMT without further action required).
 func Reify(root ipld.Node) (ipld.Node, error) {
-	panic("nyi")
+	panic("TODO")
+}
+
+func (n *Node) Substrate() ipld.Node {
+	if n.modeFilecoin {
+		// A Filecoin v3 HAMT is encoded as just the root node, without
+		// the config parameters.
+		return &n.hamt
+	}
+	// An IPLD spec HAMT is encoded including an extra root node which
+	// includes explicit config parameters.
+	return &n._HashMapRoot
 }

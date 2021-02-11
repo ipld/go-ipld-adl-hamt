@@ -17,6 +17,7 @@ import (
 var _ ipld.Node = (*Node)(nil)
 
 type Node struct {
+	modeFilecoin bool
 	_HashMapRoot
 
 	linkBuilder ipld.LinkBuilder
@@ -32,6 +33,9 @@ func (n Node) WithLinking(builder ipld.LinkBuilder, loader ipld.Loader, storer i
 }
 
 func (n *Node) bitWidth() int {
+	if n.modeFilecoin {
+		return 5
+	}
 	// bitWidth is inferred from the map length via the equation:
 	//
 	//     log2(byteLength(map) x 8)
@@ -39,6 +43,14 @@ func (n *Node) bitWidth() int {
 	// Since byteLength(map) is a power of 2, we don't need the expensive
 	// float-based math.Log2; we can simply count the trailing zero bits.
 	return bits.TrailingZeros32(uint32(len(n.hamt._map.x))) + 3
+}
+
+func (n *Node) _bucketSize() int {
+	if n.modeFilecoin {
+		return 3
+	}
+	// TODO: decide how to handle overflows
+	return int(n.bucketSize.x)
 }
 
 func (*Node) Kind() ipld.Kind {
@@ -60,7 +72,10 @@ func (*Node) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 }
 
 func (n *Node) MapIterator() ipld.MapIterator {
-	return &nodeIterator{nodeIteratorStep: nodeIteratorStep{node: &n.hamt}}
+	return &nodeIterator{
+		modeFilecoin:     n.modeFilecoin,
+		nodeIteratorStep: nodeIteratorStep{node: &n.hamt},
+	}
 }
 
 type nodeIteratorStep struct {
@@ -73,6 +88,8 @@ type nodeIteratorStep struct {
 }
 
 type nodeIterator struct {
+	modeFilecoin bool
+
 	parents []nodeIteratorStep
 
 	nodeIteratorStep
@@ -99,7 +116,13 @@ func (t *nodeIterator) Done() bool {
 	bitmap := t.node._map.x
 	found := false
 	for t.mapIndex < len(bitmap)*8 {
-		if bitsetGet(bitmap, t.mapIndex) == true {
+		var bit bool
+		if t.modeFilecoin {
+			bit = bitsetGetv3(bitmap, t.mapIndex)
+		} else {
+			bit = bitsetGet(bitmap, t.mapIndex)
+		}
+		if bit {
 			found = true
 			break
 		}
@@ -119,7 +142,12 @@ func (t *nodeIterator) Done() bool {
 		return t.Done()
 	}
 
-	dataIndex := onesCountRange(t.node._map.x, t.mapIndex)
+	var dataIndex int
+	if t.modeFilecoin {
+		dataIndex = onesCountRangev3(t.node._map.x, t.mapIndex)
+	} else {
+		dataIndex = onesCountRange(t.node._map.x, t.mapIndex)
+	}
 	// We found an element; make sure we don't iterate over it again.
 	t.mapIndex++
 
@@ -224,17 +252,21 @@ func (*Node) AsLink() (ipld.Link, error) {
 
 func (n *Node) hashKey(b []byte) []byte {
 	var hasher hash.Hash
-	switch c := multicodec.Code(n.hashAlg.x); c {
-	case multicodec.Identity:
-		return b
-	case multicodec.Sha2_256:
+	if n.modeFilecoin {
 		hasher = sha256.New()
-	case multicodec.Murmur3_128:
-		hasher = murmur3.New128()
-	default:
-		// TODO: could we reach this? the builder already handles this
-		// case, but other entry points like Reify don't.
-		panic(fmt.Sprintf("unsupported hash algorithm: %s", c))
+	} else {
+		switch c := multicodec.Code(n.hashAlg.x); c {
+		case multicodec.Identity:
+			return b
+		case multicodec.Sha2_256:
+			hasher = sha256.New()
+		case multicodec.Murmur3_128:
+			hasher = murmur3.New128()
+		default:
+			// TODO: could we reach this? the builder already handles this
+			// case, but other entry points like Reify don't.
+			panic(fmt.Sprintf("unsupported hash algorithm: %s", c))
+		}
 	}
 	hasher.Write(b)
 	return hasher.Sum(nil)
@@ -244,20 +276,34 @@ func (n *Node) insertEntry(node *_HashMapNode, bitWidth, depth int, hash []byte,
 	from := depth * bitWidth
 	index := rangedInt(hash, from, from+bitWidth)
 
-	dataIndex := onesCountRange(node._map.x, index)
-	exists := bitsetGet(node._map.x, index)
+	var dataIndex int
+	if n.modeFilecoin {
+		dataIndex = onesCountRangev3(node._map.x, index)
+	} else {
+		dataIndex = onesCountRange(node._map.x, index)
+	}
+	var exists bool
+	if n.modeFilecoin {
+		exists = bitsetGetv3(node._map.x, index)
+	} else {
+		exists = bitsetGet(node._map.x, index)
+	}
 	if !exists {
 		// Insert a new bucket at dataIndex.
 		bucket := &_Bucket{[]_BucketEntry{entry}}
 		node.data.x = append(node.data.x[:dataIndex],
 			append([]_Element{{bucket}}, node.data.x[dataIndex:]...)...)
-		bitsetSet(node._map.x, index)
+		if n.modeFilecoin {
+			node._map.x = bitsetSetv3(node._map.x, index)
+		} else {
+			bitsetSet(node._map.x, index)
+		}
 		return nil
 	}
 	// TODO: fix links up the chain too
 	switch element := node.data.x[dataIndex].x.(type) {
 	case *_Bucket:
-		if int64(len(element.x)) < n.bucketSize.x {
+		if len(element.x) < n._bucketSize() {
 			i, _ := lookupBucketEntry(element.x, entry.key.x)
 			if i >= 0 {
 				// Replace an existing key.
@@ -319,11 +365,21 @@ func (n *Node) lookupValue(node *_HashMapNode, bitWidth, depth int, hash, key []
 	from := depth * bitWidth
 	index := rangedInt(hash, from, from+bitWidth)
 
-	exists := bitsetGet(node._map.x, index)
+	var exists bool
+	if n.modeFilecoin {
+		exists = bitsetGetv3(node._map.x, index)
+	} else {
+		exists = bitsetGet(node._map.x, index)
+	}
 	if !exists {
 		return nil, nil
 	}
-	dataIndex := onesCountRange(node._map.x, index)
+	var dataIndex int
+	if n.modeFilecoin {
+		dataIndex = onesCountRangev3(node._map.x, index)
+	} else {
+		dataIndex = onesCountRange(node._map.x, index)
+	}
 	switch element := node.data.x[dataIndex].x.(type) {
 	case *_Bucket:
 		i, value := lookupBucketEntry(element.x, key)

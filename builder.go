@@ -20,6 +20,8 @@ type Prototype struct {
 	// code.
 	hashAlg    multicodec.Code
 	hashAlgSet bool
+
+	modeFilecoin bool
 }
 
 func (p Prototype) WithHashAlg(code multicodec.Code) Prototype {
@@ -30,6 +32,14 @@ func (p Prototype) WithHashAlg(code multicodec.Code) Prototype {
 
 func (p Prototype) NewBuilder() ipld.NodeBuilder {
 	return NewBuilder(p)
+}
+
+var _ ipld.NodePrototype = (*FilecoinV3Prototype)(nil)
+
+type FilecoinV3Prototype struct{}
+
+func (p FilecoinV3Prototype) NewBuilder() ipld.NodeBuilder {
+	return NewBuilder(Prototype{modeFilecoin: true})
 }
 
 var _ ipld.NodeBuilder = (*Builder)(nil)
@@ -43,6 +53,9 @@ type Builder struct {
 }
 
 func NewBuilder(proto Prototype) *Builder {
+	if proto.modeFilecoin {
+		return &Builder{node: Node{modeFilecoin: true}}
+	}
 	// Set the defaults.
 	if proto.BitWidth < 1 {
 		proto.BitWidth = 8
@@ -74,6 +87,9 @@ func (b *Builder) Build() ipld.Node { return Build(b) }
 func (b *Builder) Reset()           { b.node = Node{} }
 
 func (b *Builder) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
+	if b.node.modeFilecoin {
+		return &assembler{node: &b.node}, nil
+	}
 	if b.bitWidth < 3 {
 		return nil, fmt.Errorf("bitWidth must bee at least 3")
 	}

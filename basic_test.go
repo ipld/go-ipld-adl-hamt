@@ -29,11 +29,10 @@ func TestBasic(t *testing.T) {
 
 	qt.Assert(t, node.Length(), qt.Equals, int64(1))
 
-	val, err := node.LookupByString("foo")
+	valNode, err := node.LookupByString("foo")
 	qt.Assert(t, err, qt.IsNil)
-	valStr, err := val.AsString()
-	qt.Assert(t, err, qt.IsNil)
-	qt.Assert(t, valStr, qt.Equals, "bar")
+	val := basicValue(t, valNode)
+	qt.Assert(t, val, qt.Equals, "bar")
 }
 
 func TestTypes(t *testing.T) {
@@ -98,6 +97,9 @@ func TestTypes(t *testing.T) {
 }
 
 func basicValue(t *testing.T, node ipld.Node) interface{} {
+	if node == nil {
+		t.Fatalf("unexpected nil ipld.Node")
+	}
 	var val interface{}
 	var err error
 	switch kind := node.Kind(); kind {
@@ -230,7 +232,7 @@ func TestIterator(t *testing.T) {
 	assembler, err := builder.BeginMap(0)
 	qt.Assert(t, err, qt.IsNil)
 
-	const number = int64(50)
+	const number = int64(10)
 	seen := make(map[string]int)
 	for i := int64(0); i < number; i++ {
 		key := fmt.Sprintf("key-%02d", i)
