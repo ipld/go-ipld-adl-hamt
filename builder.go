@@ -74,8 +74,8 @@ func NewBuilder(proto Prototype) *Builder {
 	}
 }
 
-func (b Builder) WithLinking(builder ipld.LinkBuilder, loader ipld.Loader, storer ipld.Storer) *Builder {
-	b.node = *b.node.WithLinking(builder, loader, storer)
+func (b Builder) WithLinking(system ipld.LinkSystem, proto ipld.LinkPrototype) *Builder {
+	b.node = *b.node.WithLinking(system, proto)
 	return &b
 }
 

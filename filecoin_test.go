@@ -63,7 +63,7 @@ func TestFilecoinBasic(t *testing.T) {
 	node := builder.Build().(*hamt.Node)
 	nodeRepr := node.Substrate().(hamt.HashMapNode).Representation()
 	buf.Reset()
-	qt.Assert(t, dagcbor.Encoder(nodeRepr, buf), qt.IsNil)
+	qt.Assert(t, dagcbor.Encode(nodeRepr, buf), qt.IsNil)
 	enc := buf.Bytes()
 	t.Logf("go-ipld-adl-hamt: %x", fenc)
 

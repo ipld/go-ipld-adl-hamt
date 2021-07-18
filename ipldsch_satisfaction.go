@@ -68,49 +68,49 @@ func (n Any) LookupByString(key string) (ipld.Node, error) {
 		if n2, ok := n.x.(Bool); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "Int":
 		if n2, ok := n.x.(Int); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "Float":
 		if n2, ok := n.x.(Float); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "String":
 		if n2, ok := n.x.(String); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "Bytes":
 		if n2, ok := n.x.(Bytes); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "Map":
 		if n2, ok := n.x.(Map); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "List":
 		if n2, ok := n.x.(List); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "Link":
 		if n2, ok := n.x.(Link); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	default:
 		return nil, schema.ErrNoSuchField{Type: nil /*TODO*/, Field: ipld.PathSegmentOfString(key)}
@@ -124,7 +124,7 @@ func (n Any) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	return n.LookupByString(ks)
 }
 func (Any) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.Any"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.Any"}.LookupByIndex(0)
 }
 func (n Any) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -182,22 +182,22 @@ func (Any) IsNull() bool {
 	return false
 }
 func (Any) AsBool() (bool, error) {
-	return mixins.Map{"hamt.Any"}.AsBool()
+	return mixins.Map{TypeName: "hamt.Any"}.AsBool()
 }
 func (Any) AsInt() (int64, error) {
-	return mixins.Map{"hamt.Any"}.AsInt()
+	return mixins.Map{TypeName: "hamt.Any"}.AsInt()
 }
 func (Any) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.Any"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.Any"}.AsFloat()
 }
 func (Any) AsString() (string, error) {
-	return mixins.Map{"hamt.Any"}.AsString()
+	return mixins.Map{TypeName: "hamt.Any"}.AsString()
 }
 func (Any) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.Any"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.Any"}.AsBytes()
 }
 func (Any) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.Any"}.AsLink()
+	return mixins.Map{TypeName: "hamt.Any"}.AsLink()
 }
 func (Any) Prototype() ipld.NodePrototype {
 	return _Any__Prototype{}
@@ -299,7 +299,7 @@ func (na *_Any__Assembler) BeginMap(int64) (ipld.MapAssembler, error) {
 	return na, nil
 }
 func (_Any__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.Any"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.Any"}.BeginList(0)
 }
 func (na *_Any__Assembler) AssignNull() error {
 	switch *na.m {
@@ -307,7 +307,7 @@ func (na *_Any__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.Any"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.Any"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -316,22 +316,22 @@ func (na *_Any__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_Any__Assembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.Any"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.Any"}.AssignBool(false)
 }
 func (_Any__Assembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.Any"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.Any"}.AssignInt(0)
 }
 func (_Any__Assembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.Any"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.Any"}.AssignFloat(0)
 }
 func (_Any__Assembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.Any"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.Any"}.AssignString("")
 }
 func (_Any__Assembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.Any"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Any"}.AssignBytes(nil)
 }
 func (_Any__Assembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.Any"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Any"}.AssignLink(nil)
 }
 func (na *_Any__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -490,9 +490,8 @@ func (ma *_Any__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, error) {
 		ma.ca8.w = x
 		ma.ca8.m = &ma.cm
 		return ma.ca8, nil
-	default:
-		return nil, ipld.ErrInvalidKey{TypeName: "hamt.Any", Key: &_String{k}}
 	}
+	return nil, ipld.ErrInvalidKey{TypeName: "hamt.Any", Key: &_String{k}}
 }
 func (ma *_Any__Assembler) AssembleKey() ipld.NodeAssembler {
 	switch ma.state {
@@ -654,22 +653,22 @@ func (ma *_Any__Assembler) ValuePrototype(k string) ipld.NodePrototype {
 type _Any__KeyAssembler _Any__Assembler
 
 func (_Any__KeyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.BeginMap(0)
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.BeginMap(0)
 }
 func (_Any__KeyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.BeginList(0)
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.BeginList(0)
 }
 func (na *_Any__KeyAssembler) AssignNull() error {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.AssignNull()
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.AssignNull()
 }
 func (_Any__KeyAssembler) AssignBool(bool) error {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.AssignBool(false)
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.AssignBool(false)
 }
 func (_Any__KeyAssembler) AssignInt(int64) error {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.AssignInt(0)
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.AssignInt(0)
 }
 func (_Any__KeyAssembler) AssignFloat(float64) error {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.AssignFloat(0)
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.AssignFloat(0)
 }
 func (ka *_Any__KeyAssembler) AssignString(k string) error {
 	if ka.state != maState_midKey {
@@ -711,16 +710,14 @@ func (ka *_Any__KeyAssembler) AssignString(k string) error {
 		ka.ca = 8
 		ka.state = maState_expectValue
 		return nil
-	default:
-		return ipld.ErrInvalidKey{TypeName: "hamt.Any", Key: &_String{k}} // TODO: error quality: ErrInvalidUnionDiscriminant ?
 	}
-	return nil
+	return ipld.ErrInvalidKey{TypeName: "hamt.Any", Key: &_String{k}} // TODO: error quality: ErrInvalidUnionDiscriminant ?
 }
 func (_Any__KeyAssembler) AssignBytes([]byte) error {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.AssignBytes(nil)
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.AssignBytes(nil)
 }
 func (_Any__KeyAssembler) AssignLink(ipld.Link) error {
-	return mixins.StringAssembler{"hamt.Any.KeyAssembler"}.AssignLink(nil)
+	return mixins.StringAssembler{TypeName: "hamt.Any.KeyAssembler"}.AssignLink(nil)
 }
 func (ka *_Any__KeyAssembler) AssignNode(v ipld.Node) error {
 	if v2, err := v.AsString(); err != nil {
@@ -967,7 +964,6 @@ func (na *_Any__ReprAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, erro
 	na.ca6.w = x
 	na.ca6.m = na.m
 	return na.ca6.BeginMap(sizeHint)
-	return nil, schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "BeginMap called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -988,7 +984,6 @@ func (na *_Any__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, er
 	na.ca7.w = x
 	na.ca7.m = na.m
 	return na.ca7.BeginList(sizeHint)
-	return nil, schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "BeginList called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) AssignNull() error {
 	switch *na.m {
@@ -1018,7 +1013,6 @@ func (na *_Any__ReprAssembler) AssignBool(v bool) error {
 	na.ca1.w = x
 	na.ca1.m = na.m
 	return na.ca1.AssignBool(v)
-	return schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "AssignBool called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) AssignInt(v int64) error {
 	switch *na.m {
@@ -1039,7 +1033,6 @@ func (na *_Any__ReprAssembler) AssignInt(v int64) error {
 	na.ca2.w = x
 	na.ca2.m = na.m
 	return na.ca2.AssignInt(v)
-	return schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "AssignInt called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) AssignFloat(v float64) error {
 	switch *na.m {
@@ -1060,7 +1053,6 @@ func (na *_Any__ReprAssembler) AssignFloat(v float64) error {
 	na.ca3.w = x
 	na.ca3.m = na.m
 	return na.ca3.AssignFloat(v)
-	return schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "AssignFloat called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) AssignString(v string) error {
 	switch *na.m {
@@ -1081,7 +1073,6 @@ func (na *_Any__ReprAssembler) AssignString(v string) error {
 	na.ca4.w = x
 	na.ca4.m = na.m
 	return na.ca4.AssignString(v)
-	return schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "AssignString called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) AssignBytes(v []byte) error {
 	switch *na.m {
@@ -1102,7 +1093,6 @@ func (na *_Any__ReprAssembler) AssignBytes(v []byte) error {
 	na.ca5.w = x
 	na.ca5.m = na.m
 	return na.ca5.AssignBytes(v)
-	return schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "AssignBytes called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) AssignLink(v ipld.Link) error {
 	switch *na.m {
@@ -1123,7 +1113,6 @@ func (na *_Any__ReprAssembler) AssignLink(v ipld.Link) error {
 	na.ca8.w = x
 	na.ca8.m = na.m
 	return na.ca8.AssignLink(v)
-	return schema.ErrNotUnionStructure{TypeName: "hamt.Any.Repr", Detail: "AssignLink called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Any__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -1217,7 +1206,7 @@ func (_Bool__Prototype) FromBool(v bool) (Bool, error) {
 
 type _Bool__Maybe struct {
 	m schema.Maybe
-	v Bool
+	v _Bool
 }
 type MaybeBool = *_Bool__Maybe
 
@@ -1237,7 +1226,7 @@ func (m MaybeBool) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -1246,7 +1235,7 @@ func (m MaybeBool) Must() Bool {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Bool)(&_Bool{})
@@ -1256,16 +1245,16 @@ func (Bool) Kind() ipld.Kind {
 	return ipld.Kind_Bool
 }
 func (Bool) LookupByString(string) (ipld.Node, error) {
-	return mixins.Bool{"hamt.Bool"}.LookupByString("")
+	return mixins.Bool{TypeName: "hamt.Bool"}.LookupByString("")
 }
 func (Bool) LookupByNode(ipld.Node) (ipld.Node, error) {
-	return mixins.Bool{"hamt.Bool"}.LookupByNode(nil)
+	return mixins.Bool{TypeName: "hamt.Bool"}.LookupByNode(nil)
 }
 func (Bool) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Bool{"hamt.Bool"}.LookupByIndex(0)
+	return mixins.Bool{TypeName: "hamt.Bool"}.LookupByIndex(0)
 }
 func (Bool) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	return mixins.Bool{"hamt.Bool"}.LookupBySegment(seg)
+	return mixins.Bool{TypeName: "hamt.Bool"}.LookupBySegment(seg)
 }
 func (Bool) MapIterator() ipld.MapIterator {
 	return nil
@@ -1286,19 +1275,19 @@ func (n Bool) AsBool() (bool, error) {
 	return n.x, nil
 }
 func (Bool) AsInt() (int64, error) {
-	return mixins.Bool{"hamt.Bool"}.AsInt()
+	return mixins.Bool{TypeName: "hamt.Bool"}.AsInt()
 }
 func (Bool) AsFloat() (float64, error) {
-	return mixins.Bool{"hamt.Bool"}.AsFloat()
+	return mixins.Bool{TypeName: "hamt.Bool"}.AsFloat()
 }
 func (Bool) AsString() (string, error) {
-	return mixins.Bool{"hamt.Bool"}.AsString()
+	return mixins.Bool{TypeName: "hamt.Bool"}.AsString()
 }
 func (Bool) AsBytes() ([]byte, error) {
-	return mixins.Bool{"hamt.Bool"}.AsBytes()
+	return mixins.Bool{TypeName: "hamt.Bool"}.AsBytes()
 }
 func (Bool) AsLink() (ipld.Link, error) {
-	return mixins.Bool{"hamt.Bool"}.AsLink()
+	return mixins.Bool{TypeName: "hamt.Bool"}.AsLink()
 }
 func (Bool) Prototype() ipld.NodePrototype {
 	return _Bool__Prototype{}
@@ -1335,10 +1324,10 @@ type _Bool__Assembler struct {
 
 func (na *_Bool__Assembler) reset() {}
 func (_Bool__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.BoolAssembler{"hamt.Bool"}.BeginMap(0)
+	return mixins.BoolAssembler{TypeName: "hamt.Bool"}.BeginMap(0)
 }
 func (_Bool__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.BoolAssembler{"hamt.Bool"}.BeginList(0)
+	return mixins.BoolAssembler{TypeName: "hamt.Bool"}.BeginList(0)
 }
 func (na *_Bool__Assembler) AssignNull() error {
 	switch *na.m {
@@ -1346,7 +1335,7 @@ func (na *_Bool__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.BoolAssembler{"hamt.Bool"}.AssignNull()
+		return mixins.BoolAssembler{TypeName: "hamt.Bool"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
@@ -1357,27 +1346,24 @@ func (na *_Bool__Assembler) AssignBool(v bool) error {
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
-	if na.w == nil {
-		na.w = &_Bool{}
-	}
 	na.w.x = v
 	*na.m = schema.Maybe_Value
 	return nil
 }
 func (_Bool__Assembler) AssignInt(int64) error {
-	return mixins.BoolAssembler{"hamt.Bool"}.AssignInt(0)
+	return mixins.BoolAssembler{TypeName: "hamt.Bool"}.AssignInt(0)
 }
 func (_Bool__Assembler) AssignFloat(float64) error {
-	return mixins.BoolAssembler{"hamt.Bool"}.AssignFloat(0)
+	return mixins.BoolAssembler{TypeName: "hamt.Bool"}.AssignFloat(0)
 }
 func (_Bool__Assembler) AssignString(string) error {
-	return mixins.BoolAssembler{"hamt.Bool"}.AssignString("")
+	return mixins.BoolAssembler{TypeName: "hamt.Bool"}.AssignString("")
 }
 func (_Bool__Assembler) AssignBytes([]byte) error {
-	return mixins.BoolAssembler{"hamt.Bool"}.AssignBytes(nil)
+	return mixins.BoolAssembler{TypeName: "hamt.Bool"}.AssignBytes(nil)
 }
 func (_Bool__Assembler) AssignLink(ipld.Link) error {
-	return mixins.BoolAssembler{"hamt.Bool"}.AssignLink(nil)
+	return mixins.BoolAssembler{TypeName: "hamt.Bool"}.AssignLink(nil)
 }
 func (na *_Bool__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -1387,11 +1373,6 @@ func (na *_Bool__Assembler) AssignNode(v ipld.Node) error {
 		switch *na.m {
 		case schema.Maybe_Value, schema.Maybe_Null:
 			panic("invalid state: cannot assign into assembler that's already finished")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -1464,7 +1445,7 @@ func (itr *Bucket__Itr) Done() bool {
 
 type _Bucket__Maybe struct {
 	m schema.Maybe
-	v Bucket
+	v _Bucket
 }
 type MaybeBucket = *_Bucket__Maybe
 
@@ -1484,7 +1465,7 @@ func (m MaybeBucket) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -1493,7 +1474,7 @@ func (m MaybeBucket) Must() Bucket {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Bucket)(&_Bucket{})
@@ -1503,7 +1484,7 @@ func (Bucket) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (Bucket) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.Bucket"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.Bucket"}.LookupByString("")
 }
 func (n Bucket) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	idx, err := k.AsInt()
@@ -1514,7 +1495,7 @@ func (n Bucket) LookupByNode(k ipld.Node) (ipld.Node, error) {
 }
 func (n Bucket) LookupByIndex(idx int64) (ipld.Node, error) {
 	if n.Length() <= idx {
-		return nil, ipld.ErrNotExists{ipld.PathSegmentOfInt(idx)}
+		return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfInt(idx)}
 	}
 	v := &n.x[idx]
 	return v, nil
@@ -1562,22 +1543,22 @@ func (Bucket) IsNull() bool {
 	return false
 }
 func (Bucket) AsBool() (bool, error) {
-	return mixins.List{"hamt.Bucket"}.AsBool()
+	return mixins.List{TypeName: "hamt.Bucket"}.AsBool()
 }
 func (Bucket) AsInt() (int64, error) {
-	return mixins.List{"hamt.Bucket"}.AsInt()
+	return mixins.List{TypeName: "hamt.Bucket"}.AsInt()
 }
 func (Bucket) AsFloat() (float64, error) {
-	return mixins.List{"hamt.Bucket"}.AsFloat()
+	return mixins.List{TypeName: "hamt.Bucket"}.AsFloat()
 }
 func (Bucket) AsString() (string, error) {
-	return mixins.List{"hamt.Bucket"}.AsString()
+	return mixins.List{TypeName: "hamt.Bucket"}.AsString()
 }
 func (Bucket) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.Bucket"}.AsBytes()
+	return mixins.List{TypeName: "hamt.Bucket"}.AsBytes()
 }
 func (Bucket) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.Bucket"}.AsLink()
+	return mixins.List{TypeName: "hamt.Bucket"}.AsLink()
 }
 func (Bucket) Prototype() ipld.NodePrototype {
 	return _Bucket__Prototype{}
@@ -1621,7 +1602,7 @@ func (na *_Bucket__Assembler) reset() {
 	na.va.reset()
 }
 func (_Bucket__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.Bucket"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket"}.BeginMap(0)
 }
 func (na *_Bucket__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -1634,9 +1615,6 @@ func (na *_Bucket__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, err
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_Bucket{}
-	}
 	if sizeHint > 0 {
 		na.w.x = make([]_BucketEntry, 0, sizeHint)
 	}
@@ -1648,7 +1626,7 @@ func (na *_Bucket__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.Bucket"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.Bucket"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -1657,22 +1635,22 @@ func (na *_Bucket__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_Bucket__Assembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.Bucket"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket"}.AssignBool(false)
 }
 func (_Bucket__Assembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.Bucket"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket"}.AssignInt(0)
 }
 func (_Bucket__Assembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.Bucket"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket"}.AssignFloat(0)
 }
 func (_Bucket__Assembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.Bucket"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.Bucket"}.AssignString("")
 }
 func (_Bucket__Assembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.Bucket"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket"}.AssignBytes(nil)
 }
 func (_Bucket__Assembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.Bucket"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket"}.AssignLink(nil)
 }
 func (na *_Bucket__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -1684,11 +1662,6 @@ func (na *_Bucket__Assembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -1775,7 +1748,7 @@ func (_Bucket__Repr) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (_Bucket__Repr) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.Bucket.Repr"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.Bucket.Repr"}.LookupByString("")
 }
 func (nr *_Bucket__Repr) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	v, err := (Bucket)(nr).LookupByNode(k)
@@ -1828,22 +1801,22 @@ func (_Bucket__Repr) IsNull() bool {
 	return false
 }
 func (_Bucket__Repr) AsBool() (bool, error) {
-	return mixins.List{"hamt.Bucket.Repr"}.AsBool()
+	return mixins.List{TypeName: "hamt.Bucket.Repr"}.AsBool()
 }
 func (_Bucket__Repr) AsInt() (int64, error) {
-	return mixins.List{"hamt.Bucket.Repr"}.AsInt()
+	return mixins.List{TypeName: "hamt.Bucket.Repr"}.AsInt()
 }
 func (_Bucket__Repr) AsFloat() (float64, error) {
-	return mixins.List{"hamt.Bucket.Repr"}.AsFloat()
+	return mixins.List{TypeName: "hamt.Bucket.Repr"}.AsFloat()
 }
 func (_Bucket__Repr) AsString() (string, error) {
-	return mixins.List{"hamt.Bucket.Repr"}.AsString()
+	return mixins.List{TypeName: "hamt.Bucket.Repr"}.AsString()
 }
 func (_Bucket__Repr) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.Bucket.Repr"}.AsBytes()
+	return mixins.List{TypeName: "hamt.Bucket.Repr"}.AsBytes()
 }
 func (_Bucket__Repr) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.Bucket.Repr"}.AsLink()
+	return mixins.List{TypeName: "hamt.Bucket.Repr"}.AsLink()
 }
 func (_Bucket__Repr) Prototype() ipld.NodePrototype {
 	return _Bucket__ReprPrototype{}
@@ -1887,7 +1860,7 @@ func (na *_Bucket__ReprAssembler) reset() {
 	na.va.reset()
 }
 func (_Bucket__ReprAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.Bucket.Repr"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr"}.BeginMap(0)
 }
 func (na *_Bucket__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -1900,9 +1873,6 @@ func (na *_Bucket__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler,
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_Bucket{}
-	}
 	if sizeHint > 0 {
 		na.w.x = make([]_BucketEntry, 0, sizeHint)
 	}
@@ -1914,7 +1884,7 @@ func (na *_Bucket__ReprAssembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.Bucket.Repr.Repr"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr.Repr"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -1923,22 +1893,22 @@ func (na *_Bucket__ReprAssembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_Bucket__ReprAssembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.Bucket.Repr"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr"}.AssignBool(false)
 }
 func (_Bucket__ReprAssembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.Bucket.Repr"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr"}.AssignInt(0)
 }
 func (_Bucket__ReprAssembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.Bucket.Repr"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr"}.AssignFloat(0)
 }
 func (_Bucket__ReprAssembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.Bucket.Repr"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr"}.AssignString("")
 }
 func (_Bucket__ReprAssembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.Bucket.Repr"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr"}.AssignBytes(nil)
 }
 func (_Bucket__ReprAssembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.Bucket.Repr"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.Bucket.Repr"}.AssignLink(nil)
 }
 func (na *_Bucket__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -1950,11 +1920,6 @@ func (na *_Bucket__ReprAssembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -2096,7 +2061,7 @@ func (n BucketEntry) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	return n.LookupByString(ks)
 }
 func (BucketEntry) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.BucketEntry"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.BucketEntry"}.LookupByIndex(0)
 }
 func (n BucketEntry) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -2144,22 +2109,22 @@ func (BucketEntry) IsNull() bool {
 	return false
 }
 func (BucketEntry) AsBool() (bool, error) {
-	return mixins.Map{"hamt.BucketEntry"}.AsBool()
+	return mixins.Map{TypeName: "hamt.BucketEntry"}.AsBool()
 }
 func (BucketEntry) AsInt() (int64, error) {
-	return mixins.Map{"hamt.BucketEntry"}.AsInt()
+	return mixins.Map{TypeName: "hamt.BucketEntry"}.AsInt()
 }
 func (BucketEntry) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.BucketEntry"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.BucketEntry"}.AsFloat()
 }
 func (BucketEntry) AsString() (string, error) {
-	return mixins.Map{"hamt.BucketEntry"}.AsString()
+	return mixins.Map{TypeName: "hamt.BucketEntry"}.AsString()
 }
 func (BucketEntry) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.BucketEntry"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.BucketEntry"}.AsBytes()
 }
 func (BucketEntry) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.BucketEntry"}.AsLink()
+	return mixins.Map{TypeName: "hamt.BucketEntry"}.AsLink()
 }
 func (BucketEntry) Prototype() ipld.NodePrototype {
 	return _BucketEntry__Prototype{}
@@ -2228,7 +2193,7 @@ func (na *_BucketEntry__Assembler) BeginMap(int64) (ipld.MapAssembler, error) {
 	return na, nil
 }
 func (_BucketEntry__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.BucketEntry"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.BeginList(0)
 }
 func (na *_BucketEntry__Assembler) AssignNull() error {
 	switch *na.m {
@@ -2236,7 +2201,7 @@ func (na *_BucketEntry__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.BucketEntry"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -2245,22 +2210,22 @@ func (na *_BucketEntry__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_BucketEntry__Assembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.BucketEntry"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.AssignBool(false)
 }
 func (_BucketEntry__Assembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.BucketEntry"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.AssignInt(0)
 }
 func (_BucketEntry__Assembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.BucketEntry"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.AssignFloat(0)
 }
 func (_BucketEntry__Assembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.BucketEntry"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.AssignString("")
 }
 func (_BucketEntry__Assembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.BucketEntry"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.AssignBytes(nil)
 }
 func (_BucketEntry__Assembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.BucketEntry"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.BucketEntry"}.AssignLink(nil)
 }
 func (na *_BucketEntry__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -2347,7 +2312,7 @@ func (ma *_BucketEntry__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 	switch k {
 	case "key":
 		if ma.s&fieldBit__BucketEntry_Key != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__BucketEntry_Key}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__BucketEntry_Key}
 		}
 		ma.s += fieldBit__BucketEntry_Key
 		ma.state = maState_midValue
@@ -2357,7 +2322,7 @@ func (ma *_BucketEntry__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 		return &ma.ca_key, nil
 	case "value":
 		if ma.s&fieldBit__BucketEntry_Value != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__BucketEntry_Value}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__BucketEntry_Value}
 		}
 		ma.s += fieldBit__BucketEntry_Value
 		ma.state = maState_midValue
@@ -2365,9 +2330,8 @@ func (ma *_BucketEntry__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 		ma.ca_value.w = &ma.w.value
 		ma.ca_value.m = &ma.cm
 		return &ma.ca_value, nil
-	default:
-		return nil, ipld.ErrInvalidKey{TypeName: "hamt.BucketEntry", Key: &_String{k}}
 	}
+	return nil, ipld.ErrInvalidKey{TypeName: "hamt.BucketEntry", Key: &_String{k}}
 }
 func (ma *_BucketEntry__Assembler) AssembleKey() ipld.NodeAssembler {
 	switch ma.state {
@@ -2453,22 +2417,22 @@ func (ma *_BucketEntry__Assembler) ValuePrototype(k string) ipld.NodePrototype {
 type _BucketEntry__KeyAssembler _BucketEntry__Assembler
 
 func (_BucketEntry__KeyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.BeginMap(0)
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.BeginMap(0)
 }
 func (_BucketEntry__KeyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.BeginList(0)
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.BeginList(0)
 }
 func (na *_BucketEntry__KeyAssembler) AssignNull() error {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.AssignNull()
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.AssignNull()
 }
 func (_BucketEntry__KeyAssembler) AssignBool(bool) error {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.AssignBool(false)
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.AssignBool(false)
 }
 func (_BucketEntry__KeyAssembler) AssignInt(int64) error {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.AssignInt(0)
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.AssignInt(0)
 }
 func (_BucketEntry__KeyAssembler) AssignFloat(float64) error {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.AssignFloat(0)
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.AssignFloat(0)
 }
 func (ka *_BucketEntry__KeyAssembler) AssignString(k string) error {
 	if ka.state != maState_midKey {
@@ -2477,14 +2441,14 @@ func (ka *_BucketEntry__KeyAssembler) AssignString(k string) error {
 	switch k {
 	case "key":
 		if ka.s&fieldBit__BucketEntry_Key != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__BucketEntry_Key}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__BucketEntry_Key}
 		}
 		ka.s += fieldBit__BucketEntry_Key
 		ka.state = maState_expectValue
 		ka.f = 0
 	case "value":
 		if ka.s&fieldBit__BucketEntry_Value != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__BucketEntry_Value}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__BucketEntry_Value}
 		}
 		ka.s += fieldBit__BucketEntry_Value
 		ka.state = maState_expectValue
@@ -2495,10 +2459,10 @@ func (ka *_BucketEntry__KeyAssembler) AssignString(k string) error {
 	return nil
 }
 func (_BucketEntry__KeyAssembler) AssignBytes([]byte) error {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.AssignBytes(nil)
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.AssignBytes(nil)
 }
 func (_BucketEntry__KeyAssembler) AssignLink(ipld.Link) error {
-	return mixins.StringAssembler{"hamt.BucketEntry.KeyAssembler"}.AssignLink(nil)
+	return mixins.StringAssembler{TypeName: "hamt.BucketEntry.KeyAssembler"}.AssignLink(nil)
 }
 func (ka *_BucketEntry__KeyAssembler) AssignNode(v ipld.Node) error {
 	if v2, err := v.AsString(); err != nil {
@@ -2525,7 +2489,7 @@ func (_BucketEntry__Repr) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (_BucketEntry__Repr) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.BucketEntry.Repr"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.BucketEntry.Repr"}.LookupByString("")
 }
 func (n *_BucketEntry__Repr) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	ki, err := key.AsInt()
@@ -2595,22 +2559,22 @@ func (_BucketEntry__Repr) IsNull() bool {
 	return false
 }
 func (_BucketEntry__Repr) AsBool() (bool, error) {
-	return mixins.List{"hamt.BucketEntry.Repr"}.AsBool()
+	return mixins.List{TypeName: "hamt.BucketEntry.Repr"}.AsBool()
 }
 func (_BucketEntry__Repr) AsInt() (int64, error) {
-	return mixins.List{"hamt.BucketEntry.Repr"}.AsInt()
+	return mixins.List{TypeName: "hamt.BucketEntry.Repr"}.AsInt()
 }
 func (_BucketEntry__Repr) AsFloat() (float64, error) {
-	return mixins.List{"hamt.BucketEntry.Repr"}.AsFloat()
+	return mixins.List{TypeName: "hamt.BucketEntry.Repr"}.AsFloat()
 }
 func (_BucketEntry__Repr) AsString() (string, error) {
-	return mixins.List{"hamt.BucketEntry.Repr"}.AsString()
+	return mixins.List{TypeName: "hamt.BucketEntry.Repr"}.AsString()
 }
 func (_BucketEntry__Repr) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.BucketEntry.Repr"}.AsBytes()
+	return mixins.List{TypeName: "hamt.BucketEntry.Repr"}.AsBytes()
 }
 func (_BucketEntry__Repr) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.BucketEntry.Repr"}.AsLink()
+	return mixins.List{TypeName: "hamt.BucketEntry.Repr"}.AsLink()
 }
 func (_BucketEntry__Repr) Prototype() ipld.NodePrototype {
 	return _BucketEntry__ReprPrototype{}
@@ -2658,7 +2622,7 @@ func (na *_BucketEntry__ReprAssembler) reset() {
 	na.ca_value.reset()
 }
 func (_BucketEntry__ReprAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.BucketEntry.Repr"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr"}.BeginMap(0)
 }
 func (na *_BucketEntry__ReprAssembler) BeginList(int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -2679,7 +2643,7 @@ func (na *_BucketEntry__ReprAssembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.BucketEntry.Repr.Repr"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr.Repr"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -2688,22 +2652,22 @@ func (na *_BucketEntry__ReprAssembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_BucketEntry__ReprAssembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.BucketEntry.Repr"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr"}.AssignBool(false)
 }
 func (_BucketEntry__ReprAssembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.BucketEntry.Repr"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr"}.AssignInt(0)
 }
 func (_BucketEntry__ReprAssembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.BucketEntry.Repr"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr"}.AssignFloat(0)
 }
 func (_BucketEntry__ReprAssembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.BucketEntry.Repr"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr"}.AssignString("")
 }
 func (_BucketEntry__ReprAssembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.BucketEntry.Repr"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr"}.AssignBytes(nil)
 }
 func (_BucketEntry__ReprAssembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.BucketEntry.Repr"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.BucketEntry.Repr"}.AssignLink(nil)
 }
 func (na *_BucketEntry__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -2826,7 +2790,7 @@ func (_Bytes__Prototype) FromBytes(v []byte) (Bytes, error) {
 
 type _Bytes__Maybe struct {
 	m schema.Maybe
-	v Bytes
+	v _Bytes
 }
 type MaybeBytes = *_Bytes__Maybe
 
@@ -2846,7 +2810,7 @@ func (m MaybeBytes) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -2855,7 +2819,7 @@ func (m MaybeBytes) Must() Bytes {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Bytes)(&_Bytes{})
@@ -2865,16 +2829,16 @@ func (Bytes) Kind() ipld.Kind {
 	return ipld.Kind_Bytes
 }
 func (Bytes) LookupByString(string) (ipld.Node, error) {
-	return mixins.Bytes{"hamt.Bytes"}.LookupByString("")
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.LookupByString("")
 }
 func (Bytes) LookupByNode(ipld.Node) (ipld.Node, error) {
-	return mixins.Bytes{"hamt.Bytes"}.LookupByNode(nil)
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.LookupByNode(nil)
 }
 func (Bytes) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Bytes{"hamt.Bytes"}.LookupByIndex(0)
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.LookupByIndex(0)
 }
 func (Bytes) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	return mixins.Bytes{"hamt.Bytes"}.LookupBySegment(seg)
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.LookupBySegment(seg)
 }
 func (Bytes) MapIterator() ipld.MapIterator {
 	return nil
@@ -2892,22 +2856,22 @@ func (Bytes) IsNull() bool {
 	return false
 }
 func (Bytes) AsBool() (bool, error) {
-	return mixins.Bytes{"hamt.Bytes"}.AsBool()
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.AsBool()
 }
 func (Bytes) AsInt() (int64, error) {
-	return mixins.Bytes{"hamt.Bytes"}.AsInt()
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.AsInt()
 }
 func (Bytes) AsFloat() (float64, error) {
-	return mixins.Bytes{"hamt.Bytes"}.AsFloat()
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.AsFloat()
 }
 func (Bytes) AsString() (string, error) {
-	return mixins.Bytes{"hamt.Bytes"}.AsString()
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.AsString()
 }
 func (n Bytes) AsBytes() ([]byte, error) {
 	return n.x, nil
 }
 func (Bytes) AsLink() (ipld.Link, error) {
-	return mixins.Bytes{"hamt.Bytes"}.AsLink()
+	return mixins.Bytes{TypeName: "hamt.Bytes"}.AsLink()
 }
 func (Bytes) Prototype() ipld.NodePrototype {
 	return _Bytes__Prototype{}
@@ -2944,10 +2908,10 @@ type _Bytes__Assembler struct {
 
 func (na *_Bytes__Assembler) reset() {}
 func (_Bytes__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.BytesAssembler{"hamt.Bytes"}.BeginMap(0)
+	return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.BeginMap(0)
 }
 func (_Bytes__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.BytesAssembler{"hamt.Bytes"}.BeginList(0)
+	return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.BeginList(0)
 }
 func (na *_Bytes__Assembler) AssignNull() error {
 	switch *na.m {
@@ -2955,38 +2919,35 @@ func (na *_Bytes__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.BytesAssembler{"hamt.Bytes"}.AssignNull()
+		return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
 	panic("unreachable")
 }
 func (_Bytes__Assembler) AssignBool(bool) error {
-	return mixins.BytesAssembler{"hamt.Bytes"}.AssignBool(false)
+	return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.AssignBool(false)
 }
 func (_Bytes__Assembler) AssignInt(int64) error {
-	return mixins.BytesAssembler{"hamt.Bytes"}.AssignInt(0)
+	return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.AssignInt(0)
 }
 func (_Bytes__Assembler) AssignFloat(float64) error {
-	return mixins.BytesAssembler{"hamt.Bytes"}.AssignFloat(0)
+	return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.AssignFloat(0)
 }
 func (_Bytes__Assembler) AssignString(string) error {
-	return mixins.BytesAssembler{"hamt.Bytes"}.AssignString("")
+	return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.AssignString("")
 }
 func (na *_Bytes__Assembler) AssignBytes(v []byte) error {
 	switch *na.m {
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
-	if na.w == nil {
-		na.w = &_Bytes{}
-	}
 	na.w.x = v
 	*na.m = schema.Maybe_Value
 	return nil
 }
 func (_Bytes__Assembler) AssignLink(ipld.Link) error {
-	return mixins.BytesAssembler{"hamt.Bytes"}.AssignLink(nil)
+	return mixins.BytesAssembler{TypeName: "hamt.Bytes"}.AssignLink(nil)
 }
 func (na *_Bytes__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -2996,11 +2957,6 @@ func (na *_Bytes__Assembler) AssignNode(v ipld.Node) error {
 		switch *na.m {
 		case schema.Maybe_Value, schema.Maybe_Null:
 			panic("invalid state: cannot assign into assembler that's already finished")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -3083,13 +3039,13 @@ func (n Element) LookupByString(key string) (ipld.Node, error) {
 		if n2, ok := n.x.(Link__HashMapNode); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	case "Bucket":
 		if n2, ok := n.x.(Bucket); ok {
 			return n2, nil
 		} else {
-			return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+			return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(key)}
 		}
 	default:
 		return nil, schema.ErrNoSuchField{Type: nil /*TODO*/, Field: ipld.PathSegmentOfString(key)}
@@ -3103,7 +3059,7 @@ func (n Element) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	return n.LookupByString(ks)
 }
 func (Element) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.Element"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.Element"}.LookupByIndex(0)
 }
 func (n Element) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -3149,22 +3105,22 @@ func (Element) IsNull() bool {
 	return false
 }
 func (Element) AsBool() (bool, error) {
-	return mixins.Map{"hamt.Element"}.AsBool()
+	return mixins.Map{TypeName: "hamt.Element"}.AsBool()
 }
 func (Element) AsInt() (int64, error) {
-	return mixins.Map{"hamt.Element"}.AsInt()
+	return mixins.Map{TypeName: "hamt.Element"}.AsInt()
 }
 func (Element) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.Element"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.Element"}.AsFloat()
 }
 func (Element) AsString() (string, error) {
-	return mixins.Map{"hamt.Element"}.AsString()
+	return mixins.Map{TypeName: "hamt.Element"}.AsString()
 }
 func (Element) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.Element"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.Element"}.AsBytes()
 }
 func (Element) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.Element"}.AsLink()
+	return mixins.Map{TypeName: "hamt.Element"}.AsLink()
 }
 func (Element) Prototype() ipld.NodePrototype {
 	return _Element__Prototype{}
@@ -3236,7 +3192,7 @@ func (na *_Element__Assembler) BeginMap(int64) (ipld.MapAssembler, error) {
 	return na, nil
 }
 func (_Element__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.Element"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.Element"}.BeginList(0)
 }
 func (na *_Element__Assembler) AssignNull() error {
 	switch *na.m {
@@ -3244,7 +3200,7 @@ func (na *_Element__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.Element"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.Element"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -3253,22 +3209,22 @@ func (na *_Element__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_Element__Assembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.Element"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.Element"}.AssignBool(false)
 }
 func (_Element__Assembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.Element"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.Element"}.AssignInt(0)
 }
 func (_Element__Assembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.Element"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.Element"}.AssignFloat(0)
 }
 func (_Element__Assembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.Element"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.Element"}.AssignString("")
 }
 func (_Element__Assembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.Element"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Element"}.AssignBytes(nil)
 }
 func (_Element__Assembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.Element"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Element"}.AssignLink(nil)
 }
 func (na *_Element__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -3361,9 +3317,8 @@ func (ma *_Element__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, erro
 		ma.ca2.w = x
 		ma.ca2.m = &ma.cm
 		return ma.ca2, nil
-	default:
-		return nil, ipld.ErrInvalidKey{TypeName: "hamt.Element", Key: &_String{k}}
 	}
+	return nil, ipld.ErrInvalidKey{TypeName: "hamt.Element", Key: &_String{k}}
 }
 func (ma *_Element__Assembler) AssembleKey() ipld.NodeAssembler {
 	switch ma.state {
@@ -3459,22 +3414,22 @@ func (ma *_Element__Assembler) ValuePrototype(k string) ipld.NodePrototype {
 type _Element__KeyAssembler _Element__Assembler
 
 func (_Element__KeyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.BeginMap(0)
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.BeginMap(0)
 }
 func (_Element__KeyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.BeginList(0)
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.BeginList(0)
 }
 func (na *_Element__KeyAssembler) AssignNull() error {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.AssignNull()
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.AssignNull()
 }
 func (_Element__KeyAssembler) AssignBool(bool) error {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.AssignBool(false)
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.AssignBool(false)
 }
 func (_Element__KeyAssembler) AssignInt(int64) error {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.AssignInt(0)
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.AssignInt(0)
 }
 func (_Element__KeyAssembler) AssignFloat(float64) error {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.AssignFloat(0)
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.AssignFloat(0)
 }
 func (ka *_Element__KeyAssembler) AssignString(k string) error {
 	if ka.state != maState_midKey {
@@ -3492,16 +3447,14 @@ func (ka *_Element__KeyAssembler) AssignString(k string) error {
 		ka.ca = 2
 		ka.state = maState_expectValue
 		return nil
-	default:
-		return ipld.ErrInvalidKey{TypeName: "hamt.Element", Key: &_String{k}} // TODO: error quality: ErrInvalidUnionDiscriminant ?
 	}
-	return nil
+	return ipld.ErrInvalidKey{TypeName: "hamt.Element", Key: &_String{k}} // TODO: error quality: ErrInvalidUnionDiscriminant ?
 }
 func (_Element__KeyAssembler) AssignBytes([]byte) error {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.AssignBytes(nil)
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.AssignBytes(nil)
 }
 func (_Element__KeyAssembler) AssignLink(ipld.Link) error {
-	return mixins.StringAssembler{"hamt.Element.KeyAssembler"}.AssignLink(nil)
+	return mixins.StringAssembler{TypeName: "hamt.Element.KeyAssembler"}.AssignLink(nil)
 }
 func (ka *_Element__KeyAssembler) AssignNode(v ipld.Node) error {
 	if v2, err := v.AsString(); err != nil {
@@ -3686,7 +3639,6 @@ func (na *_Element__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler
 	na.ca2.w = x
 	na.ca2.m = na.m
 	return na.ca2.BeginList(sizeHint)
-	return nil, schema.ErrNotUnionStructure{TypeName: "hamt.Element.Repr", Detail: "BeginList called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Element__ReprAssembler) AssignNull() error {
 	switch *na.m {
@@ -3761,7 +3713,6 @@ func (na *_Element__ReprAssembler) AssignLink(v ipld.Link) error {
 	na.ca1.w = x
 	na.ca1.m = na.m
 	return na.ca1.AssignLink(v)
-	return schema.ErrNotUnionStructure{TypeName: "hamt.Element.Repr", Detail: "AssignLink called but is not valid for any of the kinds that are valid members of this union"}
 }
 func (na *_Element__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -3855,7 +3806,7 @@ func (_Float__Prototype) FromFloat(v float64) (Float, error) {
 
 type _Float__Maybe struct {
 	m schema.Maybe
-	v Float
+	v _Float
 }
 type MaybeFloat = *_Float__Maybe
 
@@ -3875,7 +3826,7 @@ func (m MaybeFloat) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -3884,7 +3835,7 @@ func (m MaybeFloat) Must() Float {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Float)(&_Float{})
@@ -3894,16 +3845,16 @@ func (Float) Kind() ipld.Kind {
 	return ipld.Kind_Float
 }
 func (Float) LookupByString(string) (ipld.Node, error) {
-	return mixins.Float{"hamt.Float"}.LookupByString("")
+	return mixins.Float{TypeName: "hamt.Float"}.LookupByString("")
 }
 func (Float) LookupByNode(ipld.Node) (ipld.Node, error) {
-	return mixins.Float{"hamt.Float"}.LookupByNode(nil)
+	return mixins.Float{TypeName: "hamt.Float"}.LookupByNode(nil)
 }
 func (Float) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Float{"hamt.Float"}.LookupByIndex(0)
+	return mixins.Float{TypeName: "hamt.Float"}.LookupByIndex(0)
 }
 func (Float) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	return mixins.Float{"hamt.Float"}.LookupBySegment(seg)
+	return mixins.Float{TypeName: "hamt.Float"}.LookupBySegment(seg)
 }
 func (Float) MapIterator() ipld.MapIterator {
 	return nil
@@ -3921,22 +3872,22 @@ func (Float) IsNull() bool {
 	return false
 }
 func (Float) AsBool() (bool, error) {
-	return mixins.Float{"hamt.Float"}.AsBool()
+	return mixins.Float{TypeName: "hamt.Float"}.AsBool()
 }
 func (Float) AsInt() (int64, error) {
-	return mixins.Float{"hamt.Float"}.AsInt()
+	return mixins.Float{TypeName: "hamt.Float"}.AsInt()
 }
 func (n Float) AsFloat() (float64, error) {
 	return n.x, nil
 }
 func (Float) AsString() (string, error) {
-	return mixins.Float{"hamt.Float"}.AsString()
+	return mixins.Float{TypeName: "hamt.Float"}.AsString()
 }
 func (Float) AsBytes() ([]byte, error) {
-	return mixins.Float{"hamt.Float"}.AsBytes()
+	return mixins.Float{TypeName: "hamt.Float"}.AsBytes()
 }
 func (Float) AsLink() (ipld.Link, error) {
-	return mixins.Float{"hamt.Float"}.AsLink()
+	return mixins.Float{TypeName: "hamt.Float"}.AsLink()
 }
 func (Float) Prototype() ipld.NodePrototype {
 	return _Float__Prototype{}
@@ -3973,10 +3924,10 @@ type _Float__Assembler struct {
 
 func (na *_Float__Assembler) reset() {}
 func (_Float__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.FloatAssembler{"hamt.Float"}.BeginMap(0)
+	return mixins.FloatAssembler{TypeName: "hamt.Float"}.BeginMap(0)
 }
 func (_Float__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.FloatAssembler{"hamt.Float"}.BeginList(0)
+	return mixins.FloatAssembler{TypeName: "hamt.Float"}.BeginList(0)
 }
 func (na *_Float__Assembler) AssignNull() error {
 	switch *na.m {
@@ -3984,38 +3935,35 @@ func (na *_Float__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.FloatAssembler{"hamt.Float"}.AssignNull()
+		return mixins.FloatAssembler{TypeName: "hamt.Float"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
 	panic("unreachable")
 }
 func (_Float__Assembler) AssignBool(bool) error {
-	return mixins.FloatAssembler{"hamt.Float"}.AssignBool(false)
+	return mixins.FloatAssembler{TypeName: "hamt.Float"}.AssignBool(false)
 }
 func (_Float__Assembler) AssignInt(int64) error {
-	return mixins.FloatAssembler{"hamt.Float"}.AssignInt(0)
+	return mixins.FloatAssembler{TypeName: "hamt.Float"}.AssignInt(0)
 }
 func (na *_Float__Assembler) AssignFloat(v float64) error {
 	switch *na.m {
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
-	if na.w == nil {
-		na.w = &_Float{}
-	}
 	na.w.x = v
 	*na.m = schema.Maybe_Value
 	return nil
 }
 func (_Float__Assembler) AssignString(string) error {
-	return mixins.FloatAssembler{"hamt.Float"}.AssignString("")
+	return mixins.FloatAssembler{TypeName: "hamt.Float"}.AssignString("")
 }
 func (_Float__Assembler) AssignBytes([]byte) error {
-	return mixins.FloatAssembler{"hamt.Float"}.AssignBytes(nil)
+	return mixins.FloatAssembler{TypeName: "hamt.Float"}.AssignBytes(nil)
 }
 func (_Float__Assembler) AssignLink(ipld.Link) error {
-	return mixins.FloatAssembler{"hamt.Float"}.AssignLink(nil)
+	return mixins.FloatAssembler{TypeName: "hamt.Float"}.AssignLink(nil)
 }
 func (na *_Float__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -4025,11 +3973,6 @@ func (na *_Float__Assembler) AssignNode(v ipld.Node) error {
 		switch *na.m {
 		case schema.Maybe_Value, schema.Maybe_Null:
 			panic("invalid state: cannot assign into assembler that's already finished")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -4127,7 +4070,7 @@ func (n HashMapNode) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	return n.LookupByString(ks)
 }
 func (HashMapNode) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.HashMapNode"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.HashMapNode"}.LookupByIndex(0)
 }
 func (n HashMapNode) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -4175,22 +4118,22 @@ func (HashMapNode) IsNull() bool {
 	return false
 }
 func (HashMapNode) AsBool() (bool, error) {
-	return mixins.Map{"hamt.HashMapNode"}.AsBool()
+	return mixins.Map{TypeName: "hamt.HashMapNode"}.AsBool()
 }
 func (HashMapNode) AsInt() (int64, error) {
-	return mixins.Map{"hamt.HashMapNode"}.AsInt()
+	return mixins.Map{TypeName: "hamt.HashMapNode"}.AsInt()
 }
 func (HashMapNode) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.HashMapNode"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.HashMapNode"}.AsFloat()
 }
 func (HashMapNode) AsString() (string, error) {
-	return mixins.Map{"hamt.HashMapNode"}.AsString()
+	return mixins.Map{TypeName: "hamt.HashMapNode"}.AsString()
 }
 func (HashMapNode) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.HashMapNode"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.HashMapNode"}.AsBytes()
 }
 func (HashMapNode) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.HashMapNode"}.AsLink()
+	return mixins.Map{TypeName: "hamt.HashMapNode"}.AsLink()
 }
 func (HashMapNode) Prototype() ipld.NodePrototype {
 	return _HashMapNode__Prototype{}
@@ -4259,7 +4202,7 @@ func (na *_HashMapNode__Assembler) BeginMap(int64) (ipld.MapAssembler, error) {
 	return na, nil
 }
 func (_HashMapNode__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.HashMapNode"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.BeginList(0)
 }
 func (na *_HashMapNode__Assembler) AssignNull() error {
 	switch *na.m {
@@ -4267,7 +4210,7 @@ func (na *_HashMapNode__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.HashMapNode"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -4276,22 +4219,22 @@ func (na *_HashMapNode__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_HashMapNode__Assembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.HashMapNode"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.AssignBool(false)
 }
 func (_HashMapNode__Assembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.HashMapNode"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.AssignInt(0)
 }
 func (_HashMapNode__Assembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.HashMapNode"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.AssignFloat(0)
 }
 func (_HashMapNode__Assembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.HashMapNode"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.AssignString("")
 }
 func (_HashMapNode__Assembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.HashMapNode"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.AssignBytes(nil)
 }
 func (_HashMapNode__Assembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.HashMapNode"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapNode"}.AssignLink(nil)
 }
 func (na *_HashMapNode__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -4378,7 +4321,7 @@ func (ma *_HashMapNode__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 	switch k {
 	case "map":
 		if ma.s&fieldBit__HashMapNode_Map != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapNode_Map}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapNode_Map}
 		}
 		ma.s += fieldBit__HashMapNode_Map
 		ma.state = maState_midValue
@@ -4388,7 +4331,7 @@ func (ma *_HashMapNode__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 		return &ma.ca__map, nil
 	case "data":
 		if ma.s&fieldBit__HashMapNode_Data != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapNode_Data}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapNode_Data}
 		}
 		ma.s += fieldBit__HashMapNode_Data
 		ma.state = maState_midValue
@@ -4396,9 +4339,8 @@ func (ma *_HashMapNode__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 		ma.ca_data.w = &ma.w.data
 		ma.ca_data.m = &ma.cm
 		return &ma.ca_data, nil
-	default:
-		return nil, ipld.ErrInvalidKey{TypeName: "hamt.HashMapNode", Key: &_String{k}}
 	}
+	return nil, ipld.ErrInvalidKey{TypeName: "hamt.HashMapNode", Key: &_String{k}}
 }
 func (ma *_HashMapNode__Assembler) AssembleKey() ipld.NodeAssembler {
 	switch ma.state {
@@ -4484,22 +4426,22 @@ func (ma *_HashMapNode__Assembler) ValuePrototype(k string) ipld.NodePrototype {
 type _HashMapNode__KeyAssembler _HashMapNode__Assembler
 
 func (_HashMapNode__KeyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.BeginMap(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.BeginMap(0)
 }
 func (_HashMapNode__KeyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.BeginList(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.BeginList(0)
 }
 func (na *_HashMapNode__KeyAssembler) AssignNull() error {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.AssignNull()
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.AssignNull()
 }
 func (_HashMapNode__KeyAssembler) AssignBool(bool) error {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.AssignBool(false)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.AssignBool(false)
 }
 func (_HashMapNode__KeyAssembler) AssignInt(int64) error {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.AssignInt(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.AssignInt(0)
 }
 func (_HashMapNode__KeyAssembler) AssignFloat(float64) error {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.AssignFloat(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.AssignFloat(0)
 }
 func (ka *_HashMapNode__KeyAssembler) AssignString(k string) error {
 	if ka.state != maState_midKey {
@@ -4508,14 +4450,14 @@ func (ka *_HashMapNode__KeyAssembler) AssignString(k string) error {
 	switch k {
 	case "map":
 		if ka.s&fieldBit__HashMapNode_Map != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapNode_Map}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapNode_Map}
 		}
 		ka.s += fieldBit__HashMapNode_Map
 		ka.state = maState_expectValue
 		ka.f = 0
 	case "data":
 		if ka.s&fieldBit__HashMapNode_Data != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapNode_Data}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapNode_Data}
 		}
 		ka.s += fieldBit__HashMapNode_Data
 		ka.state = maState_expectValue
@@ -4526,10 +4468,10 @@ func (ka *_HashMapNode__KeyAssembler) AssignString(k string) error {
 	return nil
 }
 func (_HashMapNode__KeyAssembler) AssignBytes([]byte) error {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.AssignBytes(nil)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.AssignBytes(nil)
 }
 func (_HashMapNode__KeyAssembler) AssignLink(ipld.Link) error {
-	return mixins.StringAssembler{"hamt.HashMapNode.KeyAssembler"}.AssignLink(nil)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapNode.KeyAssembler"}.AssignLink(nil)
 }
 func (ka *_HashMapNode__KeyAssembler) AssignNode(v ipld.Node) error {
 	if v2, err := v.AsString(); err != nil {
@@ -4556,7 +4498,7 @@ func (_HashMapNode__Repr) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (_HashMapNode__Repr) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.HashMapNode.Repr"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.HashMapNode.Repr"}.LookupByString("")
 }
 func (n *_HashMapNode__Repr) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	ki, err := key.AsInt()
@@ -4626,22 +4568,22 @@ func (_HashMapNode__Repr) IsNull() bool {
 	return false
 }
 func (_HashMapNode__Repr) AsBool() (bool, error) {
-	return mixins.List{"hamt.HashMapNode.Repr"}.AsBool()
+	return mixins.List{TypeName: "hamt.HashMapNode.Repr"}.AsBool()
 }
 func (_HashMapNode__Repr) AsInt() (int64, error) {
-	return mixins.List{"hamt.HashMapNode.Repr"}.AsInt()
+	return mixins.List{TypeName: "hamt.HashMapNode.Repr"}.AsInt()
 }
 func (_HashMapNode__Repr) AsFloat() (float64, error) {
-	return mixins.List{"hamt.HashMapNode.Repr"}.AsFloat()
+	return mixins.List{TypeName: "hamt.HashMapNode.Repr"}.AsFloat()
 }
 func (_HashMapNode__Repr) AsString() (string, error) {
-	return mixins.List{"hamt.HashMapNode.Repr"}.AsString()
+	return mixins.List{TypeName: "hamt.HashMapNode.Repr"}.AsString()
 }
 func (_HashMapNode__Repr) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.HashMapNode.Repr"}.AsBytes()
+	return mixins.List{TypeName: "hamt.HashMapNode.Repr"}.AsBytes()
 }
 func (_HashMapNode__Repr) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.HashMapNode.Repr"}.AsLink()
+	return mixins.List{TypeName: "hamt.HashMapNode.Repr"}.AsLink()
 }
 func (_HashMapNode__Repr) Prototype() ipld.NodePrototype {
 	return _HashMapNode__ReprPrototype{}
@@ -4689,7 +4631,7 @@ func (na *_HashMapNode__ReprAssembler) reset() {
 	na.ca_data.reset()
 }
 func (_HashMapNode__ReprAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.HashMapNode.Repr"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr"}.BeginMap(0)
 }
 func (na *_HashMapNode__ReprAssembler) BeginList(int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -4710,7 +4652,7 @@ func (na *_HashMapNode__ReprAssembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.HashMapNode.Repr.Repr"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr.Repr"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -4719,22 +4661,22 @@ func (na *_HashMapNode__ReprAssembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_HashMapNode__ReprAssembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.HashMapNode.Repr"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr"}.AssignBool(false)
 }
 func (_HashMapNode__ReprAssembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.HashMapNode.Repr"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr"}.AssignInt(0)
 }
 func (_HashMapNode__ReprAssembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.HashMapNode.Repr"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr"}.AssignFloat(0)
 }
 func (_HashMapNode__ReprAssembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.HashMapNode.Repr"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr"}.AssignString("")
 }
 func (_HashMapNode__ReprAssembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.HashMapNode.Repr"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr"}.AssignBytes(nil)
 }
 func (_HashMapNode__ReprAssembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.HashMapNode.Repr"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.HashMapNode.Repr"}.AssignLink(nil)
 }
 func (na *_HashMapNode__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -4922,7 +4864,7 @@ func (n HashMapRoot) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	return n.LookupByString(ks)
 }
 func (HashMapRoot) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.HashMapRoot"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.HashMapRoot"}.LookupByIndex(0)
 }
 func (n HashMapRoot) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -4973,22 +4915,22 @@ func (HashMapRoot) IsNull() bool {
 	return false
 }
 func (HashMapRoot) AsBool() (bool, error) {
-	return mixins.Map{"hamt.HashMapRoot"}.AsBool()
+	return mixins.Map{TypeName: "hamt.HashMapRoot"}.AsBool()
 }
 func (HashMapRoot) AsInt() (int64, error) {
-	return mixins.Map{"hamt.HashMapRoot"}.AsInt()
+	return mixins.Map{TypeName: "hamt.HashMapRoot"}.AsInt()
 }
 func (HashMapRoot) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.HashMapRoot"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.HashMapRoot"}.AsFloat()
 }
 func (HashMapRoot) AsString() (string, error) {
-	return mixins.Map{"hamt.HashMapRoot"}.AsString()
+	return mixins.Map{TypeName: "hamt.HashMapRoot"}.AsString()
 }
 func (HashMapRoot) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.HashMapRoot"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.HashMapRoot"}.AsBytes()
 }
 func (HashMapRoot) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.HashMapRoot"}.AsLink()
+	return mixins.Map{TypeName: "hamt.HashMapRoot"}.AsLink()
 }
 func (HashMapRoot) Prototype() ipld.NodePrototype {
 	return _HashMapRoot__Prototype{}
@@ -5060,7 +5002,7 @@ func (na *_HashMapRoot__Assembler) BeginMap(int64) (ipld.MapAssembler, error) {
 	return na, nil
 }
 func (_HashMapRoot__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.HashMapRoot"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.BeginList(0)
 }
 func (na *_HashMapRoot__Assembler) AssignNull() error {
 	switch *na.m {
@@ -5068,7 +5010,7 @@ func (na *_HashMapRoot__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.HashMapRoot"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -5077,22 +5019,22 @@ func (na *_HashMapRoot__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_HashMapRoot__Assembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.AssignBool(false)
 }
 func (_HashMapRoot__Assembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.AssignInt(0)
 }
 func (_HashMapRoot__Assembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.AssignFloat(0)
 }
 func (_HashMapRoot__Assembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.AssignString("")
 }
 func (_HashMapRoot__Assembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.AssignBytes(nil)
 }
 func (_HashMapRoot__Assembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot"}.AssignLink(nil)
 }
 func (na *_HashMapRoot__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -5189,7 +5131,7 @@ func (ma *_HashMapRoot__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 	switch k {
 	case "hashAlg":
 		if ma.s&fieldBit__HashMapRoot_HashAlg != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_HashAlg}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_HashAlg}
 		}
 		ma.s += fieldBit__HashMapRoot_HashAlg
 		ma.state = maState_midValue
@@ -5199,7 +5141,7 @@ func (ma *_HashMapRoot__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 		return &ma.ca_hashAlg, nil
 	case "bucketSize":
 		if ma.s&fieldBit__HashMapRoot_BucketSize != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_BucketSize}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_BucketSize}
 		}
 		ma.s += fieldBit__HashMapRoot_BucketSize
 		ma.state = maState_midValue
@@ -5209,7 +5151,7 @@ func (ma *_HashMapRoot__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 		return &ma.ca_bucketSize, nil
 	case "hamt":
 		if ma.s&fieldBit__HashMapRoot_Hamt != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_Hamt}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_Hamt}
 		}
 		ma.s += fieldBit__HashMapRoot_Hamt
 		ma.state = maState_midValue
@@ -5217,9 +5159,8 @@ func (ma *_HashMapRoot__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, 
 		ma.ca_hamt.w = &ma.w.hamt
 		ma.ca_hamt.m = &ma.cm
 		return &ma.ca_hamt, nil
-	default:
-		return nil, ipld.ErrInvalidKey{TypeName: "hamt.HashMapRoot", Key: &_String{k}}
 	}
+	return nil, ipld.ErrInvalidKey{TypeName: "hamt.HashMapRoot", Key: &_String{k}}
 }
 func (ma *_HashMapRoot__Assembler) AssembleKey() ipld.NodeAssembler {
 	switch ma.state {
@@ -5312,22 +5253,22 @@ func (ma *_HashMapRoot__Assembler) ValuePrototype(k string) ipld.NodePrototype {
 type _HashMapRoot__KeyAssembler _HashMapRoot__Assembler
 
 func (_HashMapRoot__KeyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.BeginMap(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.BeginMap(0)
 }
 func (_HashMapRoot__KeyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.BeginList(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.BeginList(0)
 }
 func (na *_HashMapRoot__KeyAssembler) AssignNull() error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.AssignNull()
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.AssignNull()
 }
 func (_HashMapRoot__KeyAssembler) AssignBool(bool) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.AssignBool(false)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.AssignBool(false)
 }
 func (_HashMapRoot__KeyAssembler) AssignInt(int64) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.AssignInt(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.AssignInt(0)
 }
 func (_HashMapRoot__KeyAssembler) AssignFloat(float64) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.AssignFloat(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.AssignFloat(0)
 }
 func (ka *_HashMapRoot__KeyAssembler) AssignString(k string) error {
 	if ka.state != maState_midKey {
@@ -5336,21 +5277,21 @@ func (ka *_HashMapRoot__KeyAssembler) AssignString(k string) error {
 	switch k {
 	case "hashAlg":
 		if ka.s&fieldBit__HashMapRoot_HashAlg != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_HashAlg}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_HashAlg}
 		}
 		ka.s += fieldBit__HashMapRoot_HashAlg
 		ka.state = maState_expectValue
 		ka.f = 0
 	case "bucketSize":
 		if ka.s&fieldBit__HashMapRoot_BucketSize != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_BucketSize}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_BucketSize}
 		}
 		ka.s += fieldBit__HashMapRoot_BucketSize
 		ka.state = maState_expectValue
 		ka.f = 1
 	case "hamt":
 		if ka.s&fieldBit__HashMapRoot_Hamt != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_Hamt}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_Hamt}
 		}
 		ka.s += fieldBit__HashMapRoot_Hamt
 		ka.state = maState_expectValue
@@ -5361,10 +5302,10 @@ func (ka *_HashMapRoot__KeyAssembler) AssignString(k string) error {
 	return nil
 }
 func (_HashMapRoot__KeyAssembler) AssignBytes([]byte) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.AssignBytes(nil)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.AssignBytes(nil)
 }
 func (_HashMapRoot__KeyAssembler) AssignLink(ipld.Link) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.KeyAssembler"}.AssignLink(nil)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.KeyAssembler"}.AssignLink(nil)
 }
 func (ka *_HashMapRoot__KeyAssembler) AssignNode(v ipld.Node) error {
 	if v2, err := v.AsString(); err != nil {
@@ -5415,7 +5356,7 @@ func (n *_HashMapRoot__Repr) LookupByNode(key ipld.Node) (ipld.Node, error) {
 	return n.LookupByString(ks)
 }
 func (_HashMapRoot__Repr) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.HashMapRoot.Repr"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.HashMapRoot.Repr"}.LookupByIndex(0)
 }
 func (n _HashMapRoot__Repr) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -5466,22 +5407,22 @@ func (_HashMapRoot__Repr) IsNull() bool {
 	return false
 }
 func (_HashMapRoot__Repr) AsBool() (bool, error) {
-	return mixins.Map{"hamt.HashMapRoot.Repr"}.AsBool()
+	return mixins.Map{TypeName: "hamt.HashMapRoot.Repr"}.AsBool()
 }
 func (_HashMapRoot__Repr) AsInt() (int64, error) {
-	return mixins.Map{"hamt.HashMapRoot.Repr"}.AsInt()
+	return mixins.Map{TypeName: "hamt.HashMapRoot.Repr"}.AsInt()
 }
 func (_HashMapRoot__Repr) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.HashMapRoot.Repr"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.HashMapRoot.Repr"}.AsFloat()
 }
 func (_HashMapRoot__Repr) AsString() (string, error) {
-	return mixins.Map{"hamt.HashMapRoot.Repr"}.AsString()
+	return mixins.Map{TypeName: "hamt.HashMapRoot.Repr"}.AsString()
 }
 func (_HashMapRoot__Repr) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.HashMapRoot.Repr"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.HashMapRoot.Repr"}.AsBytes()
 }
 func (_HashMapRoot__Repr) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.HashMapRoot.Repr"}.AsLink()
+	return mixins.Map{TypeName: "hamt.HashMapRoot.Repr"}.AsLink()
 }
 func (_HashMapRoot__Repr) Prototype() ipld.NodePrototype {
 	return _HashMapRoot__ReprPrototype{}
@@ -5545,7 +5486,7 @@ func (na *_HashMapRoot__ReprAssembler) BeginMap(int64) (ipld.MapAssembler, error
 	return na, nil
 }
 func (_HashMapRoot__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.HashMapRoot.Repr"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr"}.BeginList(0)
 }
 func (na *_HashMapRoot__ReprAssembler) AssignNull() error {
 	switch *na.m {
@@ -5553,7 +5494,7 @@ func (na *_HashMapRoot__ReprAssembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.HashMapRoot.Repr.Repr"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr.Repr"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -5562,22 +5503,22 @@ func (na *_HashMapRoot__ReprAssembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_HashMapRoot__ReprAssembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot.Repr"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr"}.AssignBool(false)
 }
 func (_HashMapRoot__ReprAssembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot.Repr"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr"}.AssignInt(0)
 }
 func (_HashMapRoot__ReprAssembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot.Repr"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr"}.AssignFloat(0)
 }
 func (_HashMapRoot__ReprAssembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot.Repr"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr"}.AssignString("")
 }
 func (_HashMapRoot__ReprAssembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot.Repr"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr"}.AssignBytes(nil)
 }
 func (_HashMapRoot__ReprAssembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.HashMapRoot.Repr"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.HashMapRoot.Repr"}.AssignLink(nil)
 }
 func (na *_HashMapRoot__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -5671,7 +5612,7 @@ func (ma *_HashMapRoot__ReprAssembler) AssembleEntry(k string) (ipld.NodeAssembl
 	switch k {
 	case "hashAlg":
 		if ma.s&fieldBit__HashMapRoot_HashAlg != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_HashAlg_serial}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_HashAlg_serial}
 		}
 		ma.s += fieldBit__HashMapRoot_HashAlg
 		ma.state = maState_midValue
@@ -5681,7 +5622,7 @@ func (ma *_HashMapRoot__ReprAssembler) AssembleEntry(k string) (ipld.NodeAssembl
 		return &ma.ca_hashAlg, nil
 	case "bucketSize":
 		if ma.s&fieldBit__HashMapRoot_BucketSize != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_BucketSize_serial}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_BucketSize_serial}
 		}
 		ma.s += fieldBit__HashMapRoot_BucketSize
 		ma.state = maState_midValue
@@ -5691,7 +5632,7 @@ func (ma *_HashMapRoot__ReprAssembler) AssembleEntry(k string) (ipld.NodeAssembl
 		return &ma.ca_bucketSize, nil
 	case "hamt":
 		if ma.s&fieldBit__HashMapRoot_Hamt != 0 {
-			return nil, ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_Hamt_serial}
+			return nil, ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_Hamt_serial}
 		}
 		ma.s += fieldBit__HashMapRoot_Hamt
 		ma.state = maState_midValue
@@ -5700,8 +5641,8 @@ func (ma *_HashMapRoot__ReprAssembler) AssembleEntry(k string) (ipld.NodeAssembl
 		ma.ca_hamt.m = &ma.cm
 		return &ma.ca_hamt, nil
 	default:
-		return nil, ipld.ErrInvalidKey{TypeName: "hamt.HashMapRoot.Repr", Key: &_String{k}}
 	}
+	return nil, ipld.ErrInvalidKey{TypeName: "hamt.HashMapRoot.Repr", Key: &_String{k}}
 }
 func (ma *_HashMapRoot__ReprAssembler) AssembleKey() ipld.NodeAssembler {
 	switch ma.state {
@@ -5794,22 +5735,22 @@ func (ma *_HashMapRoot__ReprAssembler) ValuePrototype(k string) ipld.NodePrototy
 type _HashMapRoot__ReprKeyAssembler _HashMapRoot__ReprAssembler
 
 func (_HashMapRoot__ReprKeyAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.BeginMap(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.BeginMap(0)
 }
 func (_HashMapRoot__ReprKeyAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.BeginList(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.BeginList(0)
 }
 func (na *_HashMapRoot__ReprKeyAssembler) AssignNull() error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.AssignNull()
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.AssignNull()
 }
 func (_HashMapRoot__ReprKeyAssembler) AssignBool(bool) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.AssignBool(false)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.AssignBool(false)
 }
 func (_HashMapRoot__ReprKeyAssembler) AssignInt(int64) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.AssignInt(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.AssignInt(0)
 }
 func (_HashMapRoot__ReprKeyAssembler) AssignFloat(float64) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.AssignFloat(0)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.AssignFloat(0)
 }
 func (ka *_HashMapRoot__ReprKeyAssembler) AssignString(k string) error {
 	if ka.state != maState_midKey {
@@ -5818,35 +5759,36 @@ func (ka *_HashMapRoot__ReprKeyAssembler) AssignString(k string) error {
 	switch k {
 	case "hashAlg":
 		if ka.s&fieldBit__HashMapRoot_HashAlg != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_HashAlg_serial}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_HashAlg_serial}
 		}
 		ka.s += fieldBit__HashMapRoot_HashAlg
 		ka.state = maState_expectValue
 		ka.f = 0
+		return nil
 	case "bucketSize":
 		if ka.s&fieldBit__HashMapRoot_BucketSize != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_BucketSize_serial}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_BucketSize_serial}
 		}
 		ka.s += fieldBit__HashMapRoot_BucketSize
 		ka.state = maState_expectValue
 		ka.f = 1
+		return nil
 	case "hamt":
 		if ka.s&fieldBit__HashMapRoot_Hamt != 0 {
-			return ipld.ErrRepeatedMapKey{&fieldName__HashMapRoot_Hamt_serial}
+			return ipld.ErrRepeatedMapKey{Key: &fieldName__HashMapRoot_Hamt_serial}
 		}
 		ka.s += fieldBit__HashMapRoot_Hamt
 		ka.state = maState_expectValue
 		ka.f = 2
-	default:
-		return ipld.ErrInvalidKey{TypeName: "hamt.HashMapRoot.Repr", Key: &_String{k}}
+		return nil
 	}
-	return nil
+	return ipld.ErrInvalidKey{TypeName: "hamt.HashMapRoot.Repr", Key: &_String{k}}
 }
 func (_HashMapRoot__ReprKeyAssembler) AssignBytes([]byte) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.AssignBytes(nil)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.AssignBytes(nil)
 }
 func (_HashMapRoot__ReprKeyAssembler) AssignLink(ipld.Link) error {
-	return mixins.StringAssembler{"hamt.HashMapRoot.Repr.KeyAssembler"}.AssignLink(nil)
+	return mixins.StringAssembler{TypeName: "hamt.HashMapRoot.Repr.KeyAssembler"}.AssignLink(nil)
 }
 func (ka *_HashMapRoot__ReprKeyAssembler) AssignNode(v ipld.Node) error {
 	if v2, err := v.AsString(); err != nil {
@@ -5869,7 +5811,7 @@ func (_Int__Prototype) FromInt(v int64) (Int, error) {
 
 type _Int__Maybe struct {
 	m schema.Maybe
-	v Int
+	v _Int
 }
 type MaybeInt = *_Int__Maybe
 
@@ -5889,7 +5831,7 @@ func (m MaybeInt) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -5898,7 +5840,7 @@ func (m MaybeInt) Must() Int {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Int)(&_Int{})
@@ -5908,16 +5850,16 @@ func (Int) Kind() ipld.Kind {
 	return ipld.Kind_Int
 }
 func (Int) LookupByString(string) (ipld.Node, error) {
-	return mixins.Int{"hamt.Int"}.LookupByString("")
+	return mixins.Int{TypeName: "hamt.Int"}.LookupByString("")
 }
 func (Int) LookupByNode(ipld.Node) (ipld.Node, error) {
-	return mixins.Int{"hamt.Int"}.LookupByNode(nil)
+	return mixins.Int{TypeName: "hamt.Int"}.LookupByNode(nil)
 }
 func (Int) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Int{"hamt.Int"}.LookupByIndex(0)
+	return mixins.Int{TypeName: "hamt.Int"}.LookupByIndex(0)
 }
 func (Int) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	return mixins.Int{"hamt.Int"}.LookupBySegment(seg)
+	return mixins.Int{TypeName: "hamt.Int"}.LookupBySegment(seg)
 }
 func (Int) MapIterator() ipld.MapIterator {
 	return nil
@@ -5935,22 +5877,22 @@ func (Int) IsNull() bool {
 	return false
 }
 func (Int) AsBool() (bool, error) {
-	return mixins.Int{"hamt.Int"}.AsBool()
+	return mixins.Int{TypeName: "hamt.Int"}.AsBool()
 }
 func (n Int) AsInt() (int64, error) {
 	return n.x, nil
 }
 func (Int) AsFloat() (float64, error) {
-	return mixins.Int{"hamt.Int"}.AsFloat()
+	return mixins.Int{TypeName: "hamt.Int"}.AsFloat()
 }
 func (Int) AsString() (string, error) {
-	return mixins.Int{"hamt.Int"}.AsString()
+	return mixins.Int{TypeName: "hamt.Int"}.AsString()
 }
 func (Int) AsBytes() ([]byte, error) {
-	return mixins.Int{"hamt.Int"}.AsBytes()
+	return mixins.Int{TypeName: "hamt.Int"}.AsBytes()
 }
 func (Int) AsLink() (ipld.Link, error) {
-	return mixins.Int{"hamt.Int"}.AsLink()
+	return mixins.Int{TypeName: "hamt.Int"}.AsLink()
 }
 func (Int) Prototype() ipld.NodePrototype {
 	return _Int__Prototype{}
@@ -5987,10 +5929,10 @@ type _Int__Assembler struct {
 
 func (na *_Int__Assembler) reset() {}
 func (_Int__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.IntAssembler{"hamt.Int"}.BeginMap(0)
+	return mixins.IntAssembler{TypeName: "hamt.Int"}.BeginMap(0)
 }
 func (_Int__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.IntAssembler{"hamt.Int"}.BeginList(0)
+	return mixins.IntAssembler{TypeName: "hamt.Int"}.BeginList(0)
 }
 func (na *_Int__Assembler) AssignNull() error {
 	switch *na.m {
@@ -5998,38 +5940,35 @@ func (na *_Int__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.IntAssembler{"hamt.Int"}.AssignNull()
+		return mixins.IntAssembler{TypeName: "hamt.Int"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
 	panic("unreachable")
 }
 func (_Int__Assembler) AssignBool(bool) error {
-	return mixins.IntAssembler{"hamt.Int"}.AssignBool(false)
+	return mixins.IntAssembler{TypeName: "hamt.Int"}.AssignBool(false)
 }
 func (na *_Int__Assembler) AssignInt(v int64) error {
 	switch *na.m {
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
-	if na.w == nil {
-		na.w = &_Int{}
-	}
 	na.w.x = v
 	*na.m = schema.Maybe_Value
 	return nil
 }
 func (_Int__Assembler) AssignFloat(float64) error {
-	return mixins.IntAssembler{"hamt.Int"}.AssignFloat(0)
+	return mixins.IntAssembler{TypeName: "hamt.Int"}.AssignFloat(0)
 }
 func (_Int__Assembler) AssignString(string) error {
-	return mixins.IntAssembler{"hamt.Int"}.AssignString("")
+	return mixins.IntAssembler{TypeName: "hamt.Int"}.AssignString("")
 }
 func (_Int__Assembler) AssignBytes([]byte) error {
-	return mixins.IntAssembler{"hamt.Int"}.AssignBytes(nil)
+	return mixins.IntAssembler{TypeName: "hamt.Int"}.AssignBytes(nil)
 }
 func (_Int__Assembler) AssignLink(ipld.Link) error {
-	return mixins.IntAssembler{"hamt.Int"}.AssignLink(nil)
+	return mixins.IntAssembler{TypeName: "hamt.Int"}.AssignLink(nil)
 }
 func (na *_Int__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -6039,11 +5978,6 @@ func (na *_Int__Assembler) AssignNode(v ipld.Node) error {
 		switch *na.m {
 		case schema.Maybe_Value, schema.Maybe_Null:
 			panic("invalid state: cannot assign into assembler that's already finished")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -6082,7 +6016,7 @@ func (_Link__Prototype) FromLink(v ipld.Link) (Link, error) {
 
 type _Link__Maybe struct {
 	m schema.Maybe
-	v Link
+	v _Link
 }
 type MaybeLink = *_Link__Maybe
 
@@ -6102,7 +6036,7 @@ func (m MaybeLink) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -6111,7 +6045,7 @@ func (m MaybeLink) Must() Link {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Link)(&_Link{})
@@ -6121,16 +6055,16 @@ func (Link) Kind() ipld.Kind {
 	return ipld.Kind_Link
 }
 func (Link) LookupByString(string) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link"}.LookupByString("")
+	return mixins.Link{TypeName: "hamt.Link"}.LookupByString("")
 }
 func (Link) LookupByNode(ipld.Node) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link"}.LookupByNode(nil)
+	return mixins.Link{TypeName: "hamt.Link"}.LookupByNode(nil)
 }
 func (Link) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link"}.LookupByIndex(0)
+	return mixins.Link{TypeName: "hamt.Link"}.LookupByIndex(0)
 }
 func (Link) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link"}.LookupBySegment(seg)
+	return mixins.Link{TypeName: "hamt.Link"}.LookupBySegment(seg)
 }
 func (Link) MapIterator() ipld.MapIterator {
 	return nil
@@ -6148,19 +6082,19 @@ func (Link) IsNull() bool {
 	return false
 }
 func (Link) AsBool() (bool, error) {
-	return mixins.Link{"hamt.Link"}.AsBool()
+	return mixins.Link{TypeName: "hamt.Link"}.AsBool()
 }
 func (Link) AsInt() (int64, error) {
-	return mixins.Link{"hamt.Link"}.AsInt()
+	return mixins.Link{TypeName: "hamt.Link"}.AsInt()
 }
 func (Link) AsFloat() (float64, error) {
-	return mixins.Link{"hamt.Link"}.AsFloat()
+	return mixins.Link{TypeName: "hamt.Link"}.AsFloat()
 }
 func (Link) AsString() (string, error) {
-	return mixins.Link{"hamt.Link"}.AsString()
+	return mixins.Link{TypeName: "hamt.Link"}.AsString()
 }
 func (Link) AsBytes() ([]byte, error) {
-	return mixins.Link{"hamt.Link"}.AsBytes()
+	return mixins.Link{TypeName: "hamt.Link"}.AsBytes()
 }
 func (n Link) AsLink() (ipld.Link, error) {
 	return n.x, nil
@@ -6200,10 +6134,10 @@ type _Link__Assembler struct {
 
 func (na *_Link__Assembler) reset() {}
 func (_Link__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.LinkAssembler{"hamt.Link"}.BeginMap(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link"}.BeginMap(0)
 }
 func (_Link__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.LinkAssembler{"hamt.Link"}.BeginList(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link"}.BeginList(0)
 }
 func (na *_Link__Assembler) AssignNull() error {
 	switch *na.m {
@@ -6211,34 +6145,31 @@ func (na *_Link__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.LinkAssembler{"hamt.Link"}.AssignNull()
+		return mixins.LinkAssembler{TypeName: "hamt.Link"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
 	panic("unreachable")
 }
 func (_Link__Assembler) AssignBool(bool) error {
-	return mixins.LinkAssembler{"hamt.Link"}.AssignBool(false)
+	return mixins.LinkAssembler{TypeName: "hamt.Link"}.AssignBool(false)
 }
 func (_Link__Assembler) AssignInt(int64) error {
-	return mixins.LinkAssembler{"hamt.Link"}.AssignInt(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link"}.AssignInt(0)
 }
 func (_Link__Assembler) AssignFloat(float64) error {
-	return mixins.LinkAssembler{"hamt.Link"}.AssignFloat(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link"}.AssignFloat(0)
 }
 func (_Link__Assembler) AssignString(string) error {
-	return mixins.LinkAssembler{"hamt.Link"}.AssignString("")
+	return mixins.LinkAssembler{TypeName: "hamt.Link"}.AssignString("")
 }
 func (_Link__Assembler) AssignBytes([]byte) error {
-	return mixins.LinkAssembler{"hamt.Link"}.AssignBytes(nil)
+	return mixins.LinkAssembler{TypeName: "hamt.Link"}.AssignBytes(nil)
 }
 func (na *_Link__Assembler) AssignLink(v ipld.Link) error {
 	switch *na.m {
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
-	}
-	if na.w == nil {
-		na.w = &_Link{}
 	}
 	na.w.x = v
 	*na.m = schema.Maybe_Value
@@ -6252,11 +6183,6 @@ func (na *_Link__Assembler) AssignNode(v ipld.Node) error {
 		switch *na.m {
 		case schema.Maybe_Value, schema.Maybe_Null:
 			panic("invalid state: cannot assign into assembler that's already finished")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -6295,7 +6221,7 @@ func (_Link__HashMapNode__Prototype) FromLink(v ipld.Link) (Link__HashMapNode, e
 
 type _Link__HashMapNode__Maybe struct {
 	m schema.Maybe
-	v Link__HashMapNode
+	v _Link__HashMapNode
 }
 type MaybeLink__HashMapNode = *_Link__HashMapNode__Maybe
 
@@ -6315,7 +6241,7 @@ func (m MaybeLink__HashMapNode) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -6324,7 +6250,7 @@ func (m MaybeLink__HashMapNode) Must() Link__HashMapNode {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Link__HashMapNode)(&_Link__HashMapNode{})
@@ -6334,16 +6260,16 @@ func (Link__HashMapNode) Kind() ipld.Kind {
 	return ipld.Kind_Link
 }
 func (Link__HashMapNode) LookupByString(string) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.LookupByString("")
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.LookupByString("")
 }
 func (Link__HashMapNode) LookupByNode(ipld.Node) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.LookupByNode(nil)
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.LookupByNode(nil)
 }
 func (Link__HashMapNode) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.LookupByIndex(0)
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.LookupByIndex(0)
 }
 func (Link__HashMapNode) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.LookupBySegment(seg)
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.LookupBySegment(seg)
 }
 func (Link__HashMapNode) MapIterator() ipld.MapIterator {
 	return nil
@@ -6361,19 +6287,19 @@ func (Link__HashMapNode) IsNull() bool {
 	return false
 }
 func (Link__HashMapNode) AsBool() (bool, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.AsBool()
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.AsBool()
 }
 func (Link__HashMapNode) AsInt() (int64, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.AsInt()
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.AsInt()
 }
 func (Link__HashMapNode) AsFloat() (float64, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.AsFloat()
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.AsFloat()
 }
 func (Link__HashMapNode) AsString() (string, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.AsString()
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.AsString()
 }
 func (Link__HashMapNode) AsBytes() ([]byte, error) {
-	return mixins.Link{"hamt.Link__HashMapNode"}.AsBytes()
+	return mixins.Link{TypeName: "hamt.Link__HashMapNode"}.AsBytes()
 }
 func (n Link__HashMapNode) AsLink() (ipld.Link, error) {
 	return n.x, nil
@@ -6413,10 +6339,10 @@ type _Link__HashMapNode__Assembler struct {
 
 func (na *_Link__HashMapNode__Assembler) reset() {}
 func (_Link__HashMapNode__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.BeginMap(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.BeginMap(0)
 }
 func (_Link__HashMapNode__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.BeginList(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.BeginList(0)
 }
 func (na *_Link__HashMapNode__Assembler) AssignNull() error {
 	switch *na.m {
@@ -6424,34 +6350,31 @@ func (na *_Link__HashMapNode__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.AssignNull()
+		return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
 	panic("unreachable")
 }
 func (_Link__HashMapNode__Assembler) AssignBool(bool) error {
-	return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.AssignBool(false)
+	return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.AssignBool(false)
 }
 func (_Link__HashMapNode__Assembler) AssignInt(int64) error {
-	return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.AssignInt(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.AssignInt(0)
 }
 func (_Link__HashMapNode__Assembler) AssignFloat(float64) error {
-	return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.AssignFloat(0)
+	return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.AssignFloat(0)
 }
 func (_Link__HashMapNode__Assembler) AssignString(string) error {
-	return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.AssignString("")
+	return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.AssignString("")
 }
 func (_Link__HashMapNode__Assembler) AssignBytes([]byte) error {
-	return mixins.LinkAssembler{"hamt.Link__HashMapNode"}.AssignBytes(nil)
+	return mixins.LinkAssembler{TypeName: "hamt.Link__HashMapNode"}.AssignBytes(nil)
 }
 func (na *_Link__HashMapNode__Assembler) AssignLink(v ipld.Link) error {
 	switch *na.m {
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
-	}
-	if na.w == nil {
-		na.w = &_Link__HashMapNode{}
 	}
 	na.w.x = v
 	*na.m = schema.Maybe_Value
@@ -6465,11 +6388,6 @@ func (na *_Link__HashMapNode__Assembler) AssignNode(v ipld.Node) error {
 		switch *na.m {
 		case schema.Maybe_Value, schema.Maybe_Null:
 			panic("invalid state: cannot assign into assembler that's already finished")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -6545,7 +6463,7 @@ func (itr *List__Itr) Done() bool {
 
 type _List__Maybe struct {
 	m schema.Maybe
-	v List
+	v _List
 }
 type MaybeList = *_List__Maybe
 
@@ -6565,7 +6483,7 @@ func (m MaybeList) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -6574,7 +6492,7 @@ func (m MaybeList) Must() List {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (List)(&_List{})
@@ -6584,7 +6502,7 @@ func (List) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (List) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.List"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.List"}.LookupByString("")
 }
 func (n List) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	idx, err := k.AsInt()
@@ -6595,7 +6513,7 @@ func (n List) LookupByNode(k ipld.Node) (ipld.Node, error) {
 }
 func (n List) LookupByIndex(idx int64) (ipld.Node, error) {
 	if n.Length() <= idx {
-		return nil, ipld.ErrNotExists{ipld.PathSegmentOfInt(idx)}
+		return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfInt(idx)}
 	}
 	v := &n.x[idx]
 	if v.m == schema.Maybe_Null {
@@ -6651,22 +6569,22 @@ func (List) IsNull() bool {
 	return false
 }
 func (List) AsBool() (bool, error) {
-	return mixins.List{"hamt.List"}.AsBool()
+	return mixins.List{TypeName: "hamt.List"}.AsBool()
 }
 func (List) AsInt() (int64, error) {
-	return mixins.List{"hamt.List"}.AsInt()
+	return mixins.List{TypeName: "hamt.List"}.AsInt()
 }
 func (List) AsFloat() (float64, error) {
-	return mixins.List{"hamt.List"}.AsFloat()
+	return mixins.List{TypeName: "hamt.List"}.AsFloat()
 }
 func (List) AsString() (string, error) {
-	return mixins.List{"hamt.List"}.AsString()
+	return mixins.List{TypeName: "hamt.List"}.AsString()
 }
 func (List) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.List"}.AsBytes()
+	return mixins.List{TypeName: "hamt.List"}.AsBytes()
 }
 func (List) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.List"}.AsLink()
+	return mixins.List{TypeName: "hamt.List"}.AsLink()
 }
 func (List) Prototype() ipld.NodePrototype {
 	return _List__Prototype{}
@@ -6709,7 +6627,7 @@ func (na *_List__Assembler) reset() {
 	na.va.reset()
 }
 func (_List__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.List"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.List"}.BeginMap(0)
 }
 func (na *_List__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -6722,9 +6640,6 @@ func (na *_List__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_List{}
-	}
 	if sizeHint > 0 {
 		na.w.x = make([]_Any__Maybe, 0, sizeHint)
 	}
@@ -6736,7 +6651,7 @@ func (na *_List__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.List"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.List"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -6745,22 +6660,22 @@ func (na *_List__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_List__Assembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.List"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.List"}.AssignBool(false)
 }
 func (_List__Assembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.List"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.List"}.AssignInt(0)
 }
 func (_List__Assembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.List"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.List"}.AssignFloat(0)
 }
 func (_List__Assembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.List"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.List"}.AssignString("")
 }
 func (_List__Assembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.List"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List"}.AssignBytes(nil)
 }
 func (_List__Assembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.List"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List"}.AssignLink(nil)
 }
 func (na *_List__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -6772,11 +6687,6 @@ func (na *_List__Assembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -6866,7 +6776,7 @@ func (_List__Repr) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (_List__Repr) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.List.Repr"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.List.Repr"}.LookupByString("")
 }
 func (nr *_List__Repr) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	v, err := (List)(nr).LookupByNode(k)
@@ -6919,22 +6829,22 @@ func (_List__Repr) IsNull() bool {
 	return false
 }
 func (_List__Repr) AsBool() (bool, error) {
-	return mixins.List{"hamt.List.Repr"}.AsBool()
+	return mixins.List{TypeName: "hamt.List.Repr"}.AsBool()
 }
 func (_List__Repr) AsInt() (int64, error) {
-	return mixins.List{"hamt.List.Repr"}.AsInt()
+	return mixins.List{TypeName: "hamt.List.Repr"}.AsInt()
 }
 func (_List__Repr) AsFloat() (float64, error) {
-	return mixins.List{"hamt.List.Repr"}.AsFloat()
+	return mixins.List{TypeName: "hamt.List.Repr"}.AsFloat()
 }
 func (_List__Repr) AsString() (string, error) {
-	return mixins.List{"hamt.List.Repr"}.AsString()
+	return mixins.List{TypeName: "hamt.List.Repr"}.AsString()
 }
 func (_List__Repr) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.List.Repr"}.AsBytes()
+	return mixins.List{TypeName: "hamt.List.Repr"}.AsBytes()
 }
 func (_List__Repr) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.List.Repr"}.AsLink()
+	return mixins.List{TypeName: "hamt.List.Repr"}.AsLink()
 }
 func (_List__Repr) Prototype() ipld.NodePrototype {
 	return _List__ReprPrototype{}
@@ -6977,7 +6887,7 @@ func (na *_List__ReprAssembler) reset() {
 	na.va.reset()
 }
 func (_List__ReprAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.List.Repr"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.List.Repr"}.BeginMap(0)
 }
 func (na *_List__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -6990,9 +6900,6 @@ func (na *_List__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, e
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_List{}
-	}
 	if sizeHint > 0 {
 		na.w.x = make([]_Any__Maybe, 0, sizeHint)
 	}
@@ -7004,7 +6911,7 @@ func (na *_List__ReprAssembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.List.Repr.Repr"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.List.Repr.Repr"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -7013,22 +6920,22 @@ func (na *_List__ReprAssembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_List__ReprAssembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.List.Repr"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.List.Repr"}.AssignBool(false)
 }
 func (_List__ReprAssembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.List.Repr"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.List.Repr"}.AssignInt(0)
 }
 func (_List__ReprAssembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.List.Repr"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.List.Repr"}.AssignFloat(0)
 }
 func (_List__ReprAssembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.List.Repr"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.List.Repr"}.AssignString("")
 }
 func (_List__ReprAssembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.List.Repr"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List.Repr"}.AssignBytes(nil)
 }
 func (_List__ReprAssembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.List.Repr"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List.Repr"}.AssignLink(nil)
 }
 func (na *_List__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -7040,11 +6947,6 @@ func (na *_List__ReprAssembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -7164,7 +7066,7 @@ func (itr *List__Element__Itr) Done() bool {
 
 type _List__Element__Maybe struct {
 	m schema.Maybe
-	v List__Element
+	v _List__Element
 }
 type MaybeList__Element = *_List__Element__Maybe
 
@@ -7184,7 +7086,7 @@ func (m MaybeList__Element) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -7193,7 +7095,7 @@ func (m MaybeList__Element) Must() List__Element {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (List__Element)(&_List__Element{})
@@ -7203,7 +7105,7 @@ func (List__Element) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (List__Element) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.List__Element"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.List__Element"}.LookupByString("")
 }
 func (n List__Element) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	idx, err := k.AsInt()
@@ -7214,7 +7116,7 @@ func (n List__Element) LookupByNode(k ipld.Node) (ipld.Node, error) {
 }
 func (n List__Element) LookupByIndex(idx int64) (ipld.Node, error) {
 	if n.Length() <= idx {
-		return nil, ipld.ErrNotExists{ipld.PathSegmentOfInt(idx)}
+		return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfInt(idx)}
 	}
 	v := &n.x[idx]
 	return v, nil
@@ -7262,22 +7164,22 @@ func (List__Element) IsNull() bool {
 	return false
 }
 func (List__Element) AsBool() (bool, error) {
-	return mixins.List{"hamt.List__Element"}.AsBool()
+	return mixins.List{TypeName: "hamt.List__Element"}.AsBool()
 }
 func (List__Element) AsInt() (int64, error) {
-	return mixins.List{"hamt.List__Element"}.AsInt()
+	return mixins.List{TypeName: "hamt.List__Element"}.AsInt()
 }
 func (List__Element) AsFloat() (float64, error) {
-	return mixins.List{"hamt.List__Element"}.AsFloat()
+	return mixins.List{TypeName: "hamt.List__Element"}.AsFloat()
 }
 func (List__Element) AsString() (string, error) {
-	return mixins.List{"hamt.List__Element"}.AsString()
+	return mixins.List{TypeName: "hamt.List__Element"}.AsString()
 }
 func (List__Element) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.List__Element"}.AsBytes()
+	return mixins.List{TypeName: "hamt.List__Element"}.AsBytes()
 }
 func (List__Element) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.List__Element"}.AsLink()
+	return mixins.List{TypeName: "hamt.List__Element"}.AsLink()
 }
 func (List__Element) Prototype() ipld.NodePrototype {
 	return _List__Element__Prototype{}
@@ -7321,7 +7223,7 @@ func (na *_List__Element__Assembler) reset() {
 	na.va.reset()
 }
 func (_List__Element__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.List__Element"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element"}.BeginMap(0)
 }
 func (na *_List__Element__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -7334,9 +7236,6 @@ func (na *_List__Element__Assembler) BeginList(sizeHint int64) (ipld.ListAssembl
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_List__Element{}
-	}
 	if sizeHint > 0 {
 		na.w.x = make([]_Element, 0, sizeHint)
 	}
@@ -7348,7 +7247,7 @@ func (na *_List__Element__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.List__Element"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.List__Element"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -7357,22 +7256,22 @@ func (na *_List__Element__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_List__Element__Assembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.List__Element"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element"}.AssignBool(false)
 }
 func (_List__Element__Assembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.List__Element"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element"}.AssignInt(0)
 }
 func (_List__Element__Assembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.List__Element"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element"}.AssignFloat(0)
 }
 func (_List__Element__Assembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.List__Element"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.List__Element"}.AssignString("")
 }
 func (_List__Element__Assembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.List__Element"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element"}.AssignBytes(nil)
 }
 func (_List__Element__Assembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.List__Element"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element"}.AssignLink(nil)
 }
 func (na *_List__Element__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -7384,11 +7283,6 @@ func (na *_List__Element__Assembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -7475,7 +7369,7 @@ func (_List__Element__Repr) Kind() ipld.Kind {
 	return ipld.Kind_List
 }
 func (_List__Element__Repr) LookupByString(string) (ipld.Node, error) {
-	return mixins.List{"hamt.List__Element.Repr"}.LookupByString("")
+	return mixins.List{TypeName: "hamt.List__Element.Repr"}.LookupByString("")
 }
 func (nr *_List__Element__Repr) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	v, err := (List__Element)(nr).LookupByNode(k)
@@ -7528,22 +7422,22 @@ func (_List__Element__Repr) IsNull() bool {
 	return false
 }
 func (_List__Element__Repr) AsBool() (bool, error) {
-	return mixins.List{"hamt.List__Element.Repr"}.AsBool()
+	return mixins.List{TypeName: "hamt.List__Element.Repr"}.AsBool()
 }
 func (_List__Element__Repr) AsInt() (int64, error) {
-	return mixins.List{"hamt.List__Element.Repr"}.AsInt()
+	return mixins.List{TypeName: "hamt.List__Element.Repr"}.AsInt()
 }
 func (_List__Element__Repr) AsFloat() (float64, error) {
-	return mixins.List{"hamt.List__Element.Repr"}.AsFloat()
+	return mixins.List{TypeName: "hamt.List__Element.Repr"}.AsFloat()
 }
 func (_List__Element__Repr) AsString() (string, error) {
-	return mixins.List{"hamt.List__Element.Repr"}.AsString()
+	return mixins.List{TypeName: "hamt.List__Element.Repr"}.AsString()
 }
 func (_List__Element__Repr) AsBytes() ([]byte, error) {
-	return mixins.List{"hamt.List__Element.Repr"}.AsBytes()
+	return mixins.List{TypeName: "hamt.List__Element.Repr"}.AsBytes()
 }
 func (_List__Element__Repr) AsLink() (ipld.Link, error) {
-	return mixins.List{"hamt.List__Element.Repr"}.AsLink()
+	return mixins.List{TypeName: "hamt.List__Element.Repr"}.AsLink()
 }
 func (_List__Element__Repr) Prototype() ipld.NodePrototype {
 	return _List__Element__ReprPrototype{}
@@ -7587,7 +7481,7 @@ func (na *_List__Element__ReprAssembler) reset() {
 	na.va.reset()
 }
 func (_List__Element__ReprAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.ListAssembler{"hamt.List__Element.Repr"}.BeginMap(0)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr"}.BeginMap(0)
 }
 func (na *_List__Element__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
 	switch *na.m {
@@ -7600,9 +7494,6 @@ func (na *_List__Element__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAss
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_List__Element{}
-	}
 	if sizeHint > 0 {
 		na.w.x = make([]_Element, 0, sizeHint)
 	}
@@ -7614,7 +7505,7 @@ func (na *_List__Element__ReprAssembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.ListAssembler{"hamt.List__Element.Repr.Repr"}.AssignNull()
+		return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr.Repr"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -7623,22 +7514,22 @@ func (na *_List__Element__ReprAssembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_List__Element__ReprAssembler) AssignBool(bool) error {
-	return mixins.ListAssembler{"hamt.List__Element.Repr"}.AssignBool(false)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr"}.AssignBool(false)
 }
 func (_List__Element__ReprAssembler) AssignInt(int64) error {
-	return mixins.ListAssembler{"hamt.List__Element.Repr"}.AssignInt(0)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr"}.AssignInt(0)
 }
 func (_List__Element__ReprAssembler) AssignFloat(float64) error {
-	return mixins.ListAssembler{"hamt.List__Element.Repr"}.AssignFloat(0)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr"}.AssignFloat(0)
 }
 func (_List__Element__ReprAssembler) AssignString(string) error {
-	return mixins.ListAssembler{"hamt.List__Element.Repr"}.AssignString("")
+	return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr"}.AssignString("")
 }
 func (_List__Element__ReprAssembler) AssignBytes([]byte) error {
-	return mixins.ListAssembler{"hamt.List__Element.Repr"}.AssignBytes(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr"}.AssignBytes(nil)
 }
 func (_List__Element__ReprAssembler) AssignLink(ipld.Link) error {
-	return mixins.ListAssembler{"hamt.List__Element.Repr"}.AssignLink(nil)
+	return mixins.ListAssembler{TypeName: "hamt.List__Element.Repr"}.AssignLink(nil)
 }
 func (na *_List__Element__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -7650,11 +7541,6 @@ func (na *_List__Element__ReprAssembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -7772,7 +7658,7 @@ func (itr *Map__Itr) Done() bool {
 
 type _Map__Maybe struct {
 	m schema.Maybe
-	v Map
+	v _Map
 }
 type MaybeMap = *_Map__Maybe
 
@@ -7792,7 +7678,7 @@ func (m MaybeMap) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -7801,7 +7687,7 @@ func (m MaybeMap) Must() Map {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (Map)(&_Map{})
@@ -7817,7 +7703,7 @@ func (n Map) LookupByString(k string) (ipld.Node, error) {
 	}
 	v, exists := n.m[k2]
 	if !exists {
-		return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(k)}
+		return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(k)}
 	}
 	if v.m == schema.Maybe_Null {
 		return ipld.Null, nil
@@ -7832,7 +7718,7 @@ func (n Map) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	}
 	v, exists := n.m[*k2]
 	if !exists {
-		return nil, ipld.ErrNotExists{ipld.PathSegmentOfString(k2.String())}
+		return nil, ipld.ErrNotExists{Segment: ipld.PathSegmentOfString(k2.String())}
 	}
 	if v.m == schema.Maybe_Null {
 		return ipld.Null, nil
@@ -7840,7 +7726,7 @@ func (n Map) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	return v.v, nil
 }
 func (Map) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.Map"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.Map"}.LookupByIndex(0)
 }
 func (n Map) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -7886,22 +7772,22 @@ func (Map) IsNull() bool {
 	return false
 }
 func (Map) AsBool() (bool, error) {
-	return mixins.Map{"hamt.Map"}.AsBool()
+	return mixins.Map{TypeName: "hamt.Map"}.AsBool()
 }
 func (Map) AsInt() (int64, error) {
-	return mixins.Map{"hamt.Map"}.AsInt()
+	return mixins.Map{TypeName: "hamt.Map"}.AsInt()
 }
 func (Map) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.Map"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.Map"}.AsFloat()
 }
 func (Map) AsString() (string, error) {
-	return mixins.Map{"hamt.Map"}.AsString()
+	return mixins.Map{TypeName: "hamt.Map"}.AsString()
 }
 func (Map) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.Map"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.Map"}.AsBytes()
 }
 func (Map) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.Map"}.AsLink()
+	return mixins.Map{TypeName: "hamt.Map"}.AsLink()
 }
 func (Map) Prototype() ipld.NodePrototype {
 	return _Map__Prototype{}
@@ -7957,15 +7843,12 @@ func (na *_Map__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_Map{}
-	}
 	na.w.m = make(map[_String]MaybeAny, sizeHint)
 	na.w.t = make([]_Map__entry, 0, sizeHint)
 	return na, nil
 }
 func (_Map__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.Map"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.Map"}.BeginList(0)
 }
 func (na *_Map__Assembler) AssignNull() error {
 	switch *na.m {
@@ -7973,7 +7856,7 @@ func (na *_Map__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.Map"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.Map"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -7982,22 +7865,22 @@ func (na *_Map__Assembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_Map__Assembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.Map"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.Map"}.AssignBool(false)
 }
 func (_Map__Assembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.Map"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.Map"}.AssignInt(0)
 }
 func (_Map__Assembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.Map"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.Map"}.AssignFloat(0)
 }
 func (_Map__Assembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.Map"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.Map"}.AssignString("")
 }
 func (_Map__Assembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.Map"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Map"}.AssignBytes(nil)
 }
 func (_Map__Assembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.Map"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Map"}.AssignLink(nil)
 }
 func (na *_Map__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -8009,11 +7892,6 @@ func (na *_Map__Assembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -8094,7 +7972,7 @@ func (ma *_Map__Assembler) AssembleEntry(k string) (ipld.NodeAssembler, error) {
 		return nil, err // TODO wrap in some kind of ErrInvalidKey
 	}
 	if _, exists := ma.w.m[k2]; exists {
-		return nil, ipld.ErrRepeatedMapKey{&k2}
+		return nil, ipld.ErrRepeatedMapKey{Key: &k2}
 	}
 	ma.w.t = append(ma.w.t, _Map__entry{k: k2})
 	tz := &ma.w.t[len(ma.w.t)-1]
@@ -8198,7 +8076,7 @@ func (nr *_Map__Repr) LookupByNode(k ipld.Node) (ipld.Node, error) {
 	return v.(Any).Representation(), nil
 }
 func (_Map__Repr) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.Map{"hamt.Map.Repr"}.LookupByIndex(0)
+	return mixins.Map{TypeName: "hamt.Map.Repr"}.LookupByIndex(0)
 }
 func (n _Map__Repr) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 	return n.LookupByString(seg.String())
@@ -8233,22 +8111,22 @@ func (_Map__Repr) IsNull() bool {
 	return false
 }
 func (_Map__Repr) AsBool() (bool, error) {
-	return mixins.Map{"hamt.Map.Repr"}.AsBool()
+	return mixins.Map{TypeName: "hamt.Map.Repr"}.AsBool()
 }
 func (_Map__Repr) AsInt() (int64, error) {
-	return mixins.Map{"hamt.Map.Repr"}.AsInt()
+	return mixins.Map{TypeName: "hamt.Map.Repr"}.AsInt()
 }
 func (_Map__Repr) AsFloat() (float64, error) {
-	return mixins.Map{"hamt.Map.Repr"}.AsFloat()
+	return mixins.Map{TypeName: "hamt.Map.Repr"}.AsFloat()
 }
 func (_Map__Repr) AsString() (string, error) {
-	return mixins.Map{"hamt.Map.Repr"}.AsString()
+	return mixins.Map{TypeName: "hamt.Map.Repr"}.AsString()
 }
 func (_Map__Repr) AsBytes() ([]byte, error) {
-	return mixins.Map{"hamt.Map.Repr"}.AsBytes()
+	return mixins.Map{TypeName: "hamt.Map.Repr"}.AsBytes()
 }
 func (_Map__Repr) AsLink() (ipld.Link, error) {
-	return mixins.Map{"hamt.Map.Repr"}.AsLink()
+	return mixins.Map{TypeName: "hamt.Map.Repr"}.AsLink()
 }
 func (_Map__Repr) Prototype() ipld.NodePrototype {
 	return _Map__ReprPrototype{}
@@ -8304,15 +8182,12 @@ func (na *_Map__ReprAssembler) BeginMap(sizeHint int64) (ipld.MapAssembler, erro
 	if sizeHint < 0 {
 		sizeHint = 0
 	}
-	if na.w == nil {
-		na.w = &_Map{}
-	}
 	na.w.m = make(map[_String]MaybeAny, sizeHint)
 	na.w.t = make([]_Map__entry, 0, sizeHint)
 	return na, nil
 }
 func (_Map__ReprAssembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.MapAssembler{"hamt.Map.Repr"}.BeginList(0)
+	return mixins.MapAssembler{TypeName: "hamt.Map.Repr"}.BeginList(0)
 }
 func (na *_Map__ReprAssembler) AssignNull() error {
 	switch *na.m {
@@ -8320,7 +8195,7 @@ func (na *_Map__ReprAssembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.MapAssembler{"hamt.Map.Repr.Repr"}.AssignNull()
+		return mixins.MapAssembler{TypeName: "hamt.Map.Repr.Repr"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	case midvalue:
@@ -8329,22 +8204,22 @@ func (na *_Map__ReprAssembler) AssignNull() error {
 	panic("unreachable")
 }
 func (_Map__ReprAssembler) AssignBool(bool) error {
-	return mixins.MapAssembler{"hamt.Map.Repr"}.AssignBool(false)
+	return mixins.MapAssembler{TypeName: "hamt.Map.Repr"}.AssignBool(false)
 }
 func (_Map__ReprAssembler) AssignInt(int64) error {
-	return mixins.MapAssembler{"hamt.Map.Repr"}.AssignInt(0)
+	return mixins.MapAssembler{TypeName: "hamt.Map.Repr"}.AssignInt(0)
 }
 func (_Map__ReprAssembler) AssignFloat(float64) error {
-	return mixins.MapAssembler{"hamt.Map.Repr"}.AssignFloat(0)
+	return mixins.MapAssembler{TypeName: "hamt.Map.Repr"}.AssignFloat(0)
 }
 func (_Map__ReprAssembler) AssignString(string) error {
-	return mixins.MapAssembler{"hamt.Map.Repr"}.AssignString("")
+	return mixins.MapAssembler{TypeName: "hamt.Map.Repr"}.AssignString("")
 }
 func (_Map__ReprAssembler) AssignBytes([]byte) error {
-	return mixins.MapAssembler{"hamt.Map.Repr"}.AssignBytes(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Map.Repr"}.AssignBytes(nil)
 }
 func (_Map__ReprAssembler) AssignLink(ipld.Link) error {
-	return mixins.MapAssembler{"hamt.Map.Repr"}.AssignLink(nil)
+	return mixins.MapAssembler{TypeName: "hamt.Map.Repr"}.AssignLink(nil)
 }
 func (na *_Map__ReprAssembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -8356,11 +8231,6 @@ func (na *_Map__ReprAssembler) AssignNode(v ipld.Node) error {
 			panic("invalid state: cannot assign into assembler that's already finished")
 		case midvalue:
 			panic("invalid state: cannot assign null into an assembler that's already begun working on recursive structures!")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value
@@ -8441,7 +8311,7 @@ func (ma *_Map__ReprAssembler) AssembleEntry(k string) (ipld.NodeAssembler, erro
 		return nil, err // TODO wrap in some kind of ErrInvalidKey
 	}
 	if _, exists := ma.w.m[k2]; exists {
-		return nil, ipld.ErrRepeatedMapKey{&k2}
+		return nil, ipld.ErrRepeatedMapKey{Key: &k2}
 	}
 	ma.w.t = append(ma.w.t, _Map__entry{k: k2})
 	tz := &ma.w.t[len(ma.w.t)-1]
@@ -8531,7 +8401,7 @@ func (_String__Prototype) FromString(v string) (String, error) {
 
 type _String__Maybe struct {
 	m schema.Maybe
-	v String
+	v _String
 }
 type MaybeString = *_String__Maybe
 
@@ -8551,7 +8421,7 @@ func (m MaybeString) AsNode() ipld.Node {
 	case schema.Maybe_Null:
 		return ipld.Null
 	case schema.Maybe_Value:
-		return m.v
+		return &m.v
 	default:
 		panic("unreachable")
 	}
@@ -8560,7 +8430,7 @@ func (m MaybeString) Must() String {
 	if !m.Exists() {
 		panic("unbox of a maybe rejected")
 	}
-	return m.v
+	return &m.v
 }
 
 var _ ipld.Node = (String)(&_String{})
@@ -8570,16 +8440,16 @@ func (String) Kind() ipld.Kind {
 	return ipld.Kind_String
 }
 func (String) LookupByString(string) (ipld.Node, error) {
-	return mixins.String{"hamt.String"}.LookupByString("")
+	return mixins.String{TypeName: "hamt.String"}.LookupByString("")
 }
 func (String) LookupByNode(ipld.Node) (ipld.Node, error) {
-	return mixins.String{"hamt.String"}.LookupByNode(nil)
+	return mixins.String{TypeName: "hamt.String"}.LookupByNode(nil)
 }
 func (String) LookupByIndex(idx int64) (ipld.Node, error) {
-	return mixins.String{"hamt.String"}.LookupByIndex(0)
+	return mixins.String{TypeName: "hamt.String"}.LookupByIndex(0)
 }
 func (String) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	return mixins.String{"hamt.String"}.LookupBySegment(seg)
+	return mixins.String{TypeName: "hamt.String"}.LookupBySegment(seg)
 }
 func (String) MapIterator() ipld.MapIterator {
 	return nil
@@ -8597,22 +8467,22 @@ func (String) IsNull() bool {
 	return false
 }
 func (String) AsBool() (bool, error) {
-	return mixins.String{"hamt.String"}.AsBool()
+	return mixins.String{TypeName: "hamt.String"}.AsBool()
 }
 func (String) AsInt() (int64, error) {
-	return mixins.String{"hamt.String"}.AsInt()
+	return mixins.String{TypeName: "hamt.String"}.AsInt()
 }
 func (String) AsFloat() (float64, error) {
-	return mixins.String{"hamt.String"}.AsFloat()
+	return mixins.String{TypeName: "hamt.String"}.AsFloat()
 }
 func (n String) AsString() (string, error) {
 	return n.x, nil
 }
 func (String) AsBytes() ([]byte, error) {
-	return mixins.String{"hamt.String"}.AsBytes()
+	return mixins.String{TypeName: "hamt.String"}.AsBytes()
 }
 func (String) AsLink() (ipld.Link, error) {
-	return mixins.String{"hamt.String"}.AsLink()
+	return mixins.String{TypeName: "hamt.String"}.AsLink()
 }
 func (String) Prototype() ipld.NodePrototype {
 	return _String__Prototype{}
@@ -8649,10 +8519,10 @@ type _String__Assembler struct {
 
 func (na *_String__Assembler) reset() {}
 func (_String__Assembler) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
-	return mixins.StringAssembler{"hamt.String"}.BeginMap(0)
+	return mixins.StringAssembler{TypeName: "hamt.String"}.BeginMap(0)
 }
 func (_String__Assembler) BeginList(sizeHint int64) (ipld.ListAssembler, error) {
-	return mixins.StringAssembler{"hamt.String"}.BeginList(0)
+	return mixins.StringAssembler{TypeName: "hamt.String"}.BeginList(0)
 }
 func (na *_String__Assembler) AssignNull() error {
 	switch *na.m {
@@ -8660,38 +8530,35 @@ func (na *_String__Assembler) AssignNull() error {
 		*na.m = schema.Maybe_Null
 		return nil
 	case schema.Maybe_Absent:
-		return mixins.StringAssembler{"hamt.String"}.AssignNull()
+		return mixins.StringAssembler{TypeName: "hamt.String"}.AssignNull()
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
 	panic("unreachable")
 }
 func (_String__Assembler) AssignBool(bool) error {
-	return mixins.StringAssembler{"hamt.String"}.AssignBool(false)
+	return mixins.StringAssembler{TypeName: "hamt.String"}.AssignBool(false)
 }
 func (_String__Assembler) AssignInt(int64) error {
-	return mixins.StringAssembler{"hamt.String"}.AssignInt(0)
+	return mixins.StringAssembler{TypeName: "hamt.String"}.AssignInt(0)
 }
 func (_String__Assembler) AssignFloat(float64) error {
-	return mixins.StringAssembler{"hamt.String"}.AssignFloat(0)
+	return mixins.StringAssembler{TypeName: "hamt.String"}.AssignFloat(0)
 }
 func (na *_String__Assembler) AssignString(v string) error {
 	switch *na.m {
 	case schema.Maybe_Value, schema.Maybe_Null:
 		panic("invalid state: cannot assign into assembler that's already finished")
 	}
-	if na.w == nil {
-		na.w = &_String{}
-	}
 	na.w.x = v
 	*na.m = schema.Maybe_Value
 	return nil
 }
 func (_String__Assembler) AssignBytes([]byte) error {
-	return mixins.StringAssembler{"hamt.String"}.AssignBytes(nil)
+	return mixins.StringAssembler{TypeName: "hamt.String"}.AssignBytes(nil)
 }
 func (_String__Assembler) AssignLink(ipld.Link) error {
-	return mixins.StringAssembler{"hamt.String"}.AssignLink(nil)
+	return mixins.StringAssembler{TypeName: "hamt.String"}.AssignLink(nil)
 }
 func (na *_String__Assembler) AssignNode(v ipld.Node) error {
 	if v.IsNull() {
@@ -8701,11 +8568,6 @@ func (na *_String__Assembler) AssignNode(v ipld.Node) error {
 		switch *na.m {
 		case schema.Maybe_Value, schema.Maybe_Null:
 			panic("invalid state: cannot assign into assembler that's already finished")
-		}
-		if na.w == nil {
-			na.w = v2
-			*na.m = schema.Maybe_Value
-			return nil
 		}
 		*na.w = *v2
 		*na.m = schema.Maybe_Value

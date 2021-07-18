@@ -178,8 +178,10 @@ func TestReplace(t *testing.T) {
 func TestLinks(t *testing.T) {
 	t.Parallel()
 
+	linkSystem := cidlink.DefaultLinkSystem()
+
 	// TODO: surely Version and MhLength could be inferred?
-	linkBuilder := cidlink.LinkBuilder{Prefix: cid.Prefix{
+	linkProto := cidlink.LinkPrototype{Prefix: cid.Prefix{
 		Version:  1, // Usually '1'.
 		Codec:    uint64(multicodec.DagCbor),
 		MhType:   uint64(multicodec.Sha3_384),
@@ -187,19 +189,20 @@ func TestLinks(t *testing.T) {
 	}}
 
 	storage := make(map[ipld.Link][]byte)
-	storer := func(ipld.LinkContext) (io.Writer, ipld.StoreCommitter, error) {
+	linkSystem.StorageWriteOpener = func(lctx ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
 		buf := bytes.Buffer{}
 		return &buf, func(lnk ipld.Link) error {
 			storage[lnk] = buf.Bytes()
 			return nil
 		}, nil
+
 	}
-	loader := func(lnk ipld.Link, _ ipld.LinkContext) (io.Reader, error) {
+	linkSystem.StorageReadOpener = func(_ ipld.LinkContext, lnk ipld.Link) (io.Reader, error) {
 		return bytes.NewReader(storage[lnk]), nil
 	}
 
 	builder := NewBuilder(Prototype{BitWidth: 3, BucketSize: 2}).
-		WithLinking(linkBuilder, loader, storer)
+		WithLinking(linkSystem, linkProto)
 
 	assembler, err := builder.BeginMap(0)
 	qt.Assert(t, err, qt.IsNil)
