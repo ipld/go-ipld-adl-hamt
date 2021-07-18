@@ -20,15 +20,13 @@ type Node struct {
 	modeFilecoin bool
 	_HashMapRoot
 
-	linkBuilder ipld.LinkBuilder
-	linkLoader  ipld.Loader
-	linkStorer  ipld.Storer
+	linkSystem    ipld.LinkSystem
+	linkPrototype ipld.LinkPrototype
 }
 
-func (n Node) WithLinking(builder ipld.LinkBuilder, loader ipld.Loader, storer ipld.Storer) *Node {
-	n.linkBuilder = builder
-	n.linkLoader = loader
-	n.linkStorer = storer
+func (n Node) WithLinking(system ipld.LinkSystem, proto ipld.LinkPrototype) *Node {
+	n.linkSystem = system
+	n.linkPrototype = proto
 	return &n
 }
 
@@ -193,11 +191,15 @@ func (n *Node) count(node *_HashMapNode, bitWidth, depth int) (int64, error) {
 			count += int64(len(element.x))
 		case *_Link__HashMapNode:
 			// TODO: cache loading links
-			b := _HashMapNode__Prototype{}.NewBuilder()
-			if err := element.x.Load(context.TODO(), ipld.LinkContext{}, b, n.linkLoader); err != nil {
+			childNode, err := n.linkSystem.Load(
+				ipld.LinkContext{Ctx: context.TODO()},
+				element.x,
+				_HashMapNode__Prototype{},
+			)
+			if err != nil {
 				return 0, err
 			}
-			child := b.Build().(*_HashMapNode)
+			child := childNode.(*_HashMapNode)
 			childCount, err := n.count(child, bitWidth, depth+1)
 			if err != nil {
 				return 0, err
@@ -324,7 +326,11 @@ func (n *Node) insertEntry(node *_HashMapNode, bitWidth, depth int, hash []byte,
 			n.insertEntry(child, bitWidth, depth+1, hash, entry)
 		}
 		n.insertEntry(child, bitWidth, depth+1, hash, entry)
-		link, err := n.linkBuilder.Build(context.TODO(), ipld.LinkContext{}, child, n.linkStorer)
+		link, err := n.linkSystem.Store(
+			ipld.LinkContext{Ctx: context.TODO()},
+			n.linkPrototype,
+			child,
+		)
 		if err != nil {
 			return err
 		}
@@ -332,13 +338,23 @@ func (n *Node) insertEntry(node *_HashMapNode, bitWidth, depth int, hash []byte,
 		node.data.x[dataIndex].x = &_Link__HashMapNode{link}
 	case *_Link__HashMapNode:
 		// TODO: cache loading links
-		b := _HashMapNode__Prototype{}.NewBuilder()
-		if err := element.x.Load(context.TODO(), ipld.LinkContext{}, b, n.linkLoader); err != nil {
+		childNode, err := n.linkSystem.Load(
+			ipld.LinkContext{Ctx: context.TODO()},
+			element.x,
+			_HashMapNode__Prototype{},
+		)
+		if err != nil {
 			return err
 		}
-		child := b.Build().(*_HashMapNode)
+		child := childNode.(*_HashMapNode)
+
 		n.insertEntry(child, bitWidth, depth+1, hash, entry)
-		link, err := n.linkBuilder.Build(context.TODO(), ipld.LinkContext{}, child, n.linkStorer)
+
+		link, err := n.linkSystem.Store(
+			ipld.LinkContext{Ctx: context.TODO()},
+			n.linkPrototype,
+			child,
+		)
 		if err != nil {
 			return err
 		}
@@ -388,11 +404,15 @@ func (n *Node) lookupValue(node *_HashMapNode, bitWidth, depth int, hash, key []
 		}
 	case *_Link__HashMapNode:
 		// TODO: cache loading links
-		b := _HashMapNode__Prototype{}.NewBuilder()
-		if err := element.x.Load(context.TODO(), ipld.LinkContext{}, b, n.linkLoader); err != nil {
+		childNode, err := n.linkSystem.Load(
+			ipld.LinkContext{Ctx: context.TODO()},
+			element.x,
+			_HashMapNode__Prototype{},
+		)
+		if err != nil {
 			return nil, err
 		}
-		child := b.Build().(*_HashMapNode)
+		child := childNode.(*_HashMapNode)
 		return n.lookupValue(child, bitWidth, depth+1, hash, key)
 	default:
 		panic(fmt.Sprintf("unknown element type: %T", element))
