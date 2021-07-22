@@ -258,8 +258,12 @@ func (a valueAssembler) AssignBytes(b []byte) error {
 	return a.AssignNode(builder.Build())
 }
 
-func (valueAssembler) AssignLink(ipld.Link) error {
-	return mixins.BytesAssembler{TypeName: "bytes"}.AssignLink(nil)
+func (a valueAssembler) AssignLink(l ipld.Link) error {
+	builder := _Any__ReprPrototype{}.NewBuilder()
+	if err := builder.AssignLink(l); err != nil {
+		return err
+	}
+	return a.AssignNode(builder.Build())
 }
 
 func (a valueAssembler) AssignNode(v ipld.Node) error {

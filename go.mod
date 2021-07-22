@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/frankban/quicktest v1.11.3
+	github.com/google/go-cmp v0.5.4
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipld/go-ipld-prime v0.10.0
 	github.com/kr/text v0.2.0 // indirect

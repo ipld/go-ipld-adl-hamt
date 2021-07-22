@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	qt "github.com/frankban/quicktest"
+	"github.com/google/go-cmp/cmp"
 	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-ipld-prime"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
@@ -38,6 +39,9 @@ func TestBasic(t *testing.T) {
 func TestTypes(t *testing.T) {
 	t.Parallel()
 
+	sampleCid, err := cid.Cast([]byte{1, 85, 0, 5, 0, 1, 2, 3, 4})
+	qt.Assert(t, err, qt.IsNil)
+
 	tests := []struct {
 		name  string
 		value interface{}
@@ -48,7 +52,8 @@ func TestTypes(t *testing.T) {
 		{"AssignFloat", 4.5},
 		{"AssignString", "foo"},
 		{"AssignBytes", []byte{1, 2, 3}},
-		// TODO: AssignLink
+		{"AssignLink", cidlink.Link{Cid: sampleCid}},
+
 		// TODO: AssignNode
 	}
 	for i, test := range tests {
@@ -76,6 +81,8 @@ func TestTypes(t *testing.T) {
 				err = assembler.AssembleValue().AssignString(value)
 			case []byte:
 				err = assembler.AssembleValue().AssignBytes(value)
+			case ipld.Link:
+				err = assembler.AssembleValue().AssignLink(value)
 			default:
 				t.Fatalf("unexpected value type: %T\n", value)
 			}
@@ -91,7 +98,12 @@ func TestTypes(t *testing.T) {
 			qt.Assert(t, err, qt.IsNil)
 
 			val := basicValue(t, valNode)
-			qt.Assert(t, val, qt.DeepEquals, test.value)
+			qt.Assert(t, val,
+				// To support comparing cid.Cid.
+				qt.CmpEquals(cmp.Comparer(func(c1, c2 cid.Cid) bool {
+					return c1.Equals(c2)
+				})),
+				test.value)
 		})
 	}
 }
@@ -115,6 +127,8 @@ func basicValue(t *testing.T, node ipld.Node) interface{} {
 		val, err = node.AsString()
 	case ipld.Kind_Bytes:
 		val, err = node.AsBytes()
+	case ipld.Kind_Link:
+		val, err = node.AsLink()
 	default:
 		t.Fatalf("node does not have a basic kind: %v\n", kind)
 	}
