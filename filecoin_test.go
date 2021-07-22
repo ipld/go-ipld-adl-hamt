@@ -27,6 +27,8 @@ func (c cborString) MarshalCBOR(w io.Writer) error {
 func TestFilecoinBasic(t *testing.T) {
 	buf := new(bytes.Buffer)
 
+	_ = cborString("") // don't let the type go unused
+
 	// Below is the code we used with go-hamt-ipld to produce a HAMT encoded
 	// with dag-cbor.
 	// The version of go-hamt-ipld used was v3.0.0-20201223215115-47873c31a853.
