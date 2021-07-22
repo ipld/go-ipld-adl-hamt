@@ -124,16 +124,6 @@ type assembler struct {
 	assemblingKey []byte
 }
 
-type assembleState uint8
-
-const (
-	stateInitial assembleState = iota
-	stateMidKey
-	stateExpectValue
-	stateMidValue
-	stateFinished
-)
-
 func (a *assembler) AssembleKey() ipld.NodeAssembler {
 	return keyAssembler{a}
 }
