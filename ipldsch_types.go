@@ -56,7 +56,8 @@ type typeSlab struct {
 
 // --- type definitions follow ---
 
-// Any matches the IPLD Schema type "Any".  It has Union type-kind, and may be interrogated like map kind.
+// Any matches the IPLD Schema type "Any".
+// Any has Union typekind, which means its data model behaviors are that of a map kind.
 type Any = *_Any
 type _Any struct {
 	x _Any__iface
@@ -95,7 +96,8 @@ type _BucketEntry struct {
 type Bytes = *_Bytes
 type _Bytes struct{ x []byte }
 
-// Element matches the IPLD Schema type "Element".  It has Union type-kind, and may be interrogated like map kind.
+// Element matches the IPLD Schema type "Element".
+// Element has Union typekind, which means its data model behaviors are that of a map kind.
 type Element = *_Element
 type _Element struct {
 	x _Element__iface
