@@ -49,12 +49,12 @@ type Builder struct {
 	hashAlg    multicodec.Code
 	bucketSize int
 
-	node Node
+	node *Node
 }
 
 func NewBuilder(proto Prototype) *Builder {
 	if proto.modeFilecoin {
-		return &Builder{node: Node{modeFilecoin: true}}
+		return &Builder{node: &Node{modeFilecoin: true}}
 	}
 	// Set the defaults.
 	if proto.BitWidth < 1 {
@@ -71,24 +71,26 @@ func NewBuilder(proto Prototype) *Builder {
 		bitWidth:   proto.BitWidth,
 		hashAlg:    proto.hashAlg,
 		bucketSize: proto.BucketSize,
+
+		node: &Node{},
 	}
 }
 
 func (b Builder) WithLinking(system ipld.LinkSystem, proto ipld.LinkPrototype) *Builder {
-	b.node = *b.node.WithLinking(system, proto)
+	b.node = b.node.WithLinking(system, proto)
 	return &b
 }
 
 func Build(builder *Builder) *Node {
-	return &builder.node
+	return builder.node
 }
 
 func (b *Builder) Build() ipld.Node { return Build(b) }
-func (b *Builder) Reset()           { b.node = Node{} }
+func (b *Builder) Reset()           { b.node = &Node{} }
 
 func (b *Builder) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 	if b.node.modeFilecoin {
-		return &assembler{node: &b.node}, nil
+		return &assembler{node: b.node}, nil
 	}
 	if b.bitWidth < 3 {
 		return nil, fmt.Errorf("bitWidth must bee at least 3")
@@ -105,7 +107,7 @@ func (b *Builder) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 			_map: _Bytes{make([]byte, 1<<(b.bitWidth-3))},
 		},
 	}
-	return &assembler{node: &b.node}, nil
+	return &assembler{node: b.node}, nil
 }
 func (b *Builder) BeginList(sizeHint int64) (ipld.ListAssembler, error) { panic("todo: error?") }
 func (b *Builder) AssignNull() error                                    { panic("todo: error?") }
