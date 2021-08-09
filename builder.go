@@ -57,8 +57,11 @@ func NewBuilder(proto Prototype) *Builder {
 		return &Builder{node: &Node{modeFilecoin: true}}
 	}
 	// Set the defaults.
+	// Following js-ipld-hamt and Filecoin's experience and research,
+	// it seems like a bitwidth of 5 and a bucket size of 3 scale well
+	// enough for large maps without causing too much churn on edits.
 	if proto.BitWidth < 1 {
-		proto.BitWidth = 8
+		proto.BitWidth = 5
 	}
 	if proto.BucketSize < 1 {
 		proto.BucketSize = 3
