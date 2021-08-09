@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"hash"
+	"math"
 	"math/bits"
 
 	"github.com/ipld/go-ipld-prime"
@@ -40,15 +41,33 @@ func (n *Node) bitWidth() int {
 	//
 	// Since byteLength(map) is a power of 2, we don't need the expensive
 	// float-based math.Log2; we can simply count the trailing zero bits.
-	return bits.TrailingZeros32(uint32(len(n.hamt._map.x))) + 3
+
+	// Prevent len==0 from giving us a byteLength of 32 or 64,
+	// since a zero integer is all trailing zeros.
+	// We also prevent overflows when converting to uint32.
+	// Such invalid states get coalescled to -1, like _bucketSize.
+	mapLength := len(n.hamt._map.x)
+	if mapLength <= 0 || int64(mapLength) > math.MaxUint32 {
+		return -1
+	}
+
+	return bits.TrailingZeros32(uint32(mapLength)) + 3
 }
 
 func (n *Node) _bucketSize() int {
 	if n.modeFilecoin {
 		return 3
 	}
-	// TODO: decide how to handle overflows
-	return int(n.bucketSize.x)
+	// Any negative bucket size,
+	// or a bucket size large enough to cause enormous allocations,
+	// gets coalesced to -1.
+	// We also prevent overflows and underflows, as we convert int64 to int.
+	const maxBucketSize = 1 << 20 // 1MiB
+	bucketSize := n.bucketSize.x
+	if bucketSize < 0 || bucketSize > maxBucketSize {
+		return -1
+	}
+	return int(bucketSize)
 }
 
 func (*Node) Kind() ipld.Kind {
