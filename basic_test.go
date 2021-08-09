@@ -319,3 +319,46 @@ func TestBuilder(t *testing.T) {
 	qt.Assert(t, node1.Length(), qt.Equals, int64(1))
 	qt.Assert(t, node2.Length(), qt.Equals, int64(2))
 }
+
+func TestCOW(t *testing.T) {
+	t.Parallel()
+
+	builder := Prototype{}.NewBuilder()
+	assembler, err := builder.BeginMap(0)
+	qt.Assert(t, err, qt.IsNil)
+
+	qt.Assert(t, assembler.AssembleKey().AssignString("foo"), qt.IsNil)
+	qt.Assert(t, assembler.AssembleValue().AssignString("bar1"), qt.IsNil)
+	qt.Assert(t, assembler.Finish(), qt.IsNil)
+
+	node := builder.Build()
+
+	qt.Assert(t, node.Length(), qt.Equals, int64(1))
+
+	val, err := node.LookupByString("foo")
+	qt.Assert(t, err, qt.IsNil)
+	valStr, err := val.AsString()
+	qt.Assert(t, err, qt.IsNil)
+	qt.Assert(t, valStr, qt.Equals, "bar1")
+
+	builder.Reset()
+	builder.(*Builder).StartWith(node)
+	qt.Assert(t, assembler.AssembleKey().AssignString("foo2"), qt.IsNil)
+	qt.Assert(t, assembler.AssembleValue().AssignString("bar2"), qt.IsNil)
+	qt.Assert(t, assembler.Finish(), qt.IsNil)
+
+	node2 := builder.Build()
+
+	qt.Check(t, node2.Length(), qt.Equals, int64(2))
+
+	val, err = node2.LookupByString("foo")
+	qt.Assert(t, err, qt.IsNil)
+	valStr, err = val.AsString()
+	qt.Assert(t, err, qt.IsNil)
+	qt.Assert(t, valStr, qt.Equals, "bar1")
+	val, err = node2.LookupByString("foo2")
+	qt.Assert(t, err, qt.IsNil)
+	valStr, err = val.AsString()
+	qt.Assert(t, err, qt.IsNil)
+	qt.Assert(t, valStr, qt.Equals, "bar2")
+}
