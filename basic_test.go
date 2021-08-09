@@ -284,3 +284,38 @@ func TestIterator(t *testing.T) {
 	}
 	qt.Assert(t, gotNumber, qt.Equals, number)
 }
+
+func TestBuilder(t *testing.T) {
+	t.Parallel()
+
+	builder := Prototype{}.NewBuilder()
+	asm1, err := builder.BeginMap(0)
+	qt.Assert(t, err, qt.IsNil)
+
+	qt.Assert(t, asm1.AssembleKey().AssignString("foo"), qt.IsNil)
+	qt.Assert(t, asm1.AssembleValue().AssignString("x"), qt.IsNil)
+	qt.Assert(t, asm1.Finish(), qt.IsNil)
+
+	node1 := builder.Build()
+
+	qt.Assert(t, node1.Length(), qt.Equals, int64(1))
+
+	// If we reset the builder, the node should still be the same.
+	builder.Reset()
+	qt.Assert(t, node1.Length(), qt.Equals, int64(1))
+
+	// If we build a new node, both nodes should work as expected.
+	asm2, err := builder.BeginMap(0)
+	qt.Assert(t, err, qt.IsNil)
+
+	qt.Assert(t, asm2.AssembleKey().AssignString("foo"), qt.IsNil)
+	qt.Assert(t, asm2.AssembleValue().AssignString("x"), qt.IsNil)
+	qt.Assert(t, asm2.AssembleKey().AssignString("bar"), qt.IsNil)
+	qt.Assert(t, asm2.AssembleValue().AssignString("y"), qt.IsNil)
+	qt.Assert(t, asm2.Finish(), qt.IsNil)
+
+	node2 := builder.Build()
+
+	qt.Assert(t, node1.Length(), qt.Equals, int64(1))
+	qt.Assert(t, node2.Length(), qt.Equals, int64(2))
+}
