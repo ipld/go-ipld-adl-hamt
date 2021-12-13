@@ -12,7 +12,6 @@ import (
 	"github.com/ipld/go-ipld-prime"
 	"github.com/ipld/go-ipld-prime/node/mixins"
 	"github.com/multiformats/go-multicodec"
-	"github.com/twmb/murmur3"
 )
 
 var _ ipld.Node = (*Node)(nil)
@@ -281,8 +280,6 @@ func (n *Node) hashKey(b []byte) []byte {
 			return b
 		case multicodec.Sha2_256:
 			hasher = sha256.New()
-		case multicodec.Murmur3_128:
-			hasher = murmur3.New128()
 		default:
 			// TODO: could we reach this? the builder already handles this
 			// case, but other entry points like Reify don't.
