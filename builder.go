@@ -67,7 +67,7 @@ func NewBuilder(proto Prototype) *Builder {
 		proto.BucketSize = 3
 	}
 	if !proto.hashAlgSet {
-		proto.hashAlg = multicodec.Murmur3_128
+		proto.hashAlg = multicodec.Murmur3X64_64
 	}
 
 	return &Builder{
@@ -99,7 +99,7 @@ func (b *Builder) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 		return nil, fmt.Errorf("bitWidth must bee at least 3")
 	}
 	switch b.hashAlg {
-	case multicodec.Identity, multicodec.Sha2_256, multicodec.Murmur3_128:
+	case multicodec.Identity, multicodec.Sha2_256, multicodec.Murmur3X64_64:
 	default:
 		return nil, fmt.Errorf("unsupported hash algorithm: %x", b.hashAlg)
 	}

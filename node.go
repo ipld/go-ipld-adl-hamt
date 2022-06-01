@@ -281,7 +281,7 @@ func (n *Node) hashKey(b []byte) []byte {
 			return b
 		case multicodec.Sha2_256:
 			hasher = sha256.New()
-		case multicodec.Murmur3_128:
+		case multicodec.Murmur3X64_64:
 			hasher = murmur3.New128()
 		default:
 			// TODO: could we reach this? the builder already handles this
