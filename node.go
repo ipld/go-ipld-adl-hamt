@@ -10,6 +10,9 @@ import (
 	"math/bits"
 
 	"github.com/ipld/go-ipld-prime"
+	"github.com/ipld/go-ipld-prime/datamodel"
+	basicnode "github.com/ipld/go-ipld-prime/node/basic"
+	"github.com/ipld/go-ipld-prime/node/bindnode"
 	"github.com/ipld/go-ipld-prime/node/mixins"
 	"github.com/multiformats/go-multicodec"
 	"github.com/twmb/murmur3"
@@ -18,11 +21,14 @@ import (
 var _ ipld.Node = (*Node)(nil)
 
 type Node struct {
-	modeFilecoin bool
-	_HashMapRoot
-
+	HashMapRoot
+	modeFilecoin  bool
 	linkSystem    ipld.LinkSystem
 	linkPrototype ipld.LinkPrototype
+}
+
+func (n Node) Prototype() datamodel.NodePrototype {
+	return HashMapRootPrototype
 }
 
 func (n Node) WithLinking(system ipld.LinkSystem, proto ipld.LinkPrototype) *Node {
@@ -45,8 +51,8 @@ func (n *Node) bitWidth() int {
 	// Prevent len==0 from giving us a byteLength of 32 or 64,
 	// since a zero integer is all trailing zeros.
 	// We also prevent overflows when converting to uint32.
-	// Such invalid states get coalescled to -1, like _bucketSize.
-	mapLength := len(n.hamt._map.x)
+	// Such invalid states get coalesced to -1, like BucketSize.
+	mapLength := len(n.Hamt.Map)
 	if mapLength <= 0 || int64(mapLength) > math.MaxUint32 {
 		return -1
 	}
@@ -63,11 +69,11 @@ func (n *Node) _bucketSize() int {
 	// gets coalesced to -1.
 	// We also prevent overflows and underflows, as we convert int64 to int.
 	const maxBucketSize = 1 << 20 // 1MiB
-	bucketSize := n.bucketSize.x
+	bucketSize := n.HashMapRoot.BucketSize
 	if bucketSize < 0 || bucketSize > maxBucketSize {
 		return -1
 	}
-	return int(bucketSize)
+	return bucketSize
 }
 
 func (*Node) Kind() ipld.Kind {
@@ -76,8 +82,8 @@ func (*Node) Kind() ipld.Kind {
 
 func (n *Node) LookupByString(s string) (ipld.Node, error) {
 	key := []byte(s)
-	hash := n.hashKey(key)
-	return n.lookupValue(&n.hamt, n.bitWidth(), 0, hash, key)
+	hk := n.hashKey(key)
+	return n.lookupValue(&n.Hamt, n.bitWidth(), 0, hk, key)
 }
 
 func (*Node) LookupByNode(ipld.Node) (ipld.Node, error) {
@@ -91,16 +97,16 @@ func (*Node) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 func (n *Node) MapIterator() ipld.MapIterator {
 	return &nodeIterator{
 		modeFilecoin:     n.modeFilecoin,
-		nodeIteratorStep: nodeIteratorStep{node: &n.hamt},
+		nodeIteratorStep: nodeIteratorStep{node: &n.Hamt},
 	}
 }
 
 type nodeIteratorStep struct {
-	node *_HashMapNode
+	node *HashMapNode
 
 	mapIndex int
 
-	bucket      *_Bucket
+	bucket      *Bucket
 	bucketIndex int
 }
 
@@ -111,14 +117,14 @@ type nodeIterator struct {
 
 	nodeIteratorStep
 
-	next *_BucketEntry
+	next *BucketEntry
 }
 
 func (t *nodeIterator) Done() bool {
 	if t.bucket != nil {
 		// We are iterating over a bucket.
-		if t.bucketIndex < len(t.bucket.x) {
-			t.next = &t.bucket.x[t.bucketIndex]
+		if t.bucketIndex < len(*t.bucket) {
+			t.next = &((*t.bucket)[t.bucketIndex])
 			t.bucketIndex++
 			return false
 		}
@@ -130,7 +136,7 @@ func (t *nodeIterator) Done() bool {
 
 	// We are not in the middle of a sub-node or bucket.
 	// Find the next bit set in the bitmap.
-	bitmap := t.node._map.x
+	bitmap := t.node.Map
 	found := false
 	for t.mapIndex < len(bitmap)*8 {
 		var bit bool
@@ -161,22 +167,23 @@ func (t *nodeIterator) Done() bool {
 
 	var dataIndex int
 	if t.modeFilecoin {
-		dataIndex = onesCountRangev3(t.node._map.x, t.mapIndex)
+		dataIndex = onesCountRangev3(t.node.Map, t.mapIndex)
 	} else {
-		dataIndex = onesCountRange(t.node._map.x, t.mapIndex)
+		dataIndex = onesCountRange(t.node.Map, t.mapIndex)
 	}
 	// We found an element; make sure we don't iterate over it again.
 	t.mapIndex++
 
-	switch element := t.node.data.x[dataIndex].x.(type) {
-	case *_Bucket:
-		t.bucket = element
+	element := t.node.Data[dataIndex]
+	switch {
+	case element.Bucket != nil:
+		t.bucket = element.Bucket
 		t.bucketIndex = 1
 
-		t.next = &element.x[0]
+		t.next = &(*element.Bucket)[0]
 		return false
 	default:
-		panic(fmt.Sprintf("unexpected element type: %T", element))
+		panic(fmt.Sprintf("unexpected element type: %v", element))
 	}
 }
 
@@ -189,43 +196,45 @@ func (t *nodeIterator) Next() (key, value ipld.Node, _ error) {
 	// Lucky for us, in Go a string can still represent arbitrary bytes.
 	// So for now, return the key as a String node.
 	// TODO: revisit this if the state of pathing with mixed kind keys advances.
-	key = (&_String{x: string(t.next.key.x)}).Representation()
-	value = t.next.value.Representation()
-	return key, value, nil
+	key = basicnode.NewString(string(t.next.Key))
+	return key, t.next.Value, nil
 }
 
 func (n *Node) Length() int64 {
-	count, err := n.count(&n.hamt, n.bitWidth(), 0)
+	count, err := n.count(&n.Hamt, n.bitWidth(), 0)
 	if err != nil {
 		panic(fmt.Sprintf("TODO: what to do with this error: %v", err))
 	}
 	return count
 }
 
-func (n *Node) count(node *_HashMapNode, bitWidth, depth int) (int64, error) {
+func (n *Node) count(node *HashMapNode, bitWidth, depth int) (int64, error) {
 	count := int64(0)
-	for _, element := range node.data.x {
-		switch element := element.x.(type) {
-		case *_Bucket:
-			count += int64(len(element.x))
-		case *_Link__HashMapNode:
+	for _, element := range node.Data {
+		switch {
+		case element.Bucket != nil:
+			count += int64(len(*element.Bucket))
+		case element.HashMapNode != nil:
 			// TODO: cache loading links
 			childNode, err := n.linkSystem.Load(
 				ipld.LinkContext{Ctx: context.TODO()},
-				element.x,
-				_HashMapNode__Prototype{},
+				*element.HashMapNode,
+				HashMapNodePrototype,
 			)
 			if err != nil {
 				return 0, err
 			}
-			child := childNode.(*_HashMapNode)
+			child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
+			if !ok {
+				panic(fmt.Sprintf("unexpected node type: %v", childNode))
+			}
 			childCount, err := n.count(child, bitWidth, depth+1)
 			if err != nil {
 				return 0, err
 			}
 			count += childCount
 		default:
-			panic(fmt.Sprintf("unknown element type: %T", element))
+			panic(fmt.Sprintf("unknown element type: %v", element))
 		}
 	}
 	return count, nil
@@ -276,7 +285,7 @@ func (n *Node) hashKey(b []byte) []byte {
 	if n.modeFilecoin {
 		hasher = sha256.New()
 	} else {
-		switch c := multicodec.Code(n.hashAlg.x); c {
+		switch c := multicodec.Code(n.HashAlg); c {
 		case multicodec.Identity:
 			return b
 		case multicodec.Sha2_256:
@@ -293,145 +302,161 @@ func (n *Node) hashKey(b []byte) []byte {
 	return hasher.Sum(nil)
 }
 
-func (n *Node) insertEntry(node *_HashMapNode, bitWidth, depth int, hash []byte, entry _BucketEntry) error {
+func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, entry BucketEntry) error {
 	from := depth * bitWidth
 	index := rangedInt(hash, from, from+bitWidth)
 
 	var dataIndex int
 	if n.modeFilecoin {
-		dataIndex = onesCountRangev3(node._map.x, index)
+		dataIndex = onesCountRangev3(node.Map, index)
 	} else {
-		dataIndex = onesCountRange(node._map.x, index)
+		dataIndex = onesCountRange(node.Map, index)
 	}
 	var exists bool
 	if n.modeFilecoin {
-		exists = bitsetGetv3(node._map.x, index)
+		exists = bitsetGetv3(node.Map, index)
 	} else {
-		exists = bitsetGet(node._map.x, index)
+		exists = bitsetGet(node.Map, index)
 	}
 	if !exists {
 		// Insert a new bucket at dataIndex.
-		bucket := &_Bucket{[]_BucketEntry{entry}}
-		node.data.x = append(node.data.x[:dataIndex],
-			append([]_Element{{bucket}}, node.data.x[dataIndex:]...)...)
+		bucket := Bucket([]BucketEntry{entry})
+		node.Data = append(node.Data[:dataIndex],
+			append([]Element{{Bucket: &bucket}}, node.Data[dataIndex:]...)...)
 		if n.modeFilecoin {
-			node._map.x = bitsetSetv3(node._map.x, index)
+			node.Map = bitsetSetv3(node.Map, index)
 		} else {
-			bitsetSet(node._map.x, index)
+			bitsetSet(node.Map, index)
 		}
 		return nil
 	}
 	// TODO: fix links up the chain too
-	switch element := node.data.x[dataIndex].x.(type) {
-	case *_Bucket:
-		if len(element.x) < n._bucketSize() {
-			i, _ := lookupBucketEntry(element.x, entry.key.x)
+	element := node.Data[dataIndex]
+	switch {
+	case element.Bucket != nil:
+		bucket := *element.Bucket
+		if len(bucket) < n._bucketSize() {
+			i, _ := lookupBucketEntry(bucket, entry.Key)
 			if i >= 0 {
 				// Replace an existing key.
-				element.x[i] = entry
+				bucket[i] = entry
 			} else {
 				// Add a new key.
 				// TODO: keep the list sorted
-				element.x = append(element.x, entry)
+				bucket = append(bucket, entry)
 			}
-			node.data.x[dataIndex].x = element
+			element.Bucket = &bucket
+			node.Data[dataIndex] = element
 			break
 		}
-		child := &_HashMapNode{
-			_map: _Bytes{make([]byte, 1<<(bitWidth-3))},
+		child := &HashMapNode{
+			Map: make([]byte, 1<<(bitWidth-3)),
 		}
-		for _, entry := range element.x {
-			hash := n.hashKey(entry.key.x)
-			n.insertEntry(child, bitWidth, depth+1, hash, entry)
+		for _, entry := range bucket {
+			hk := n.hashKey(entry.Key)
+			if err := n.insertEntry(child, bitWidth, depth+1, hk, entry); err != nil {
+				return err
+			}
 		}
-		n.insertEntry(child, bitWidth, depth+1, hash, entry)
+		if err := n.insertEntry(child, bitWidth, depth+1, hash, entry); err != nil {
+			return err
+		}
+
+		childNode := bindnode.Wrap(child, HashMapNodePrototype.Type())
+
 		link, err := n.linkSystem.Store(
 			ipld.LinkContext{Ctx: context.TODO()},
 			n.linkPrototype,
-			child,
+			childNode,
 		)
 		if err != nil {
 			return err
 		}
-
-		node.data.x[dataIndex].x = &_Link__HashMapNode{link}
-	case *_Link__HashMapNode:
+		node.Data[dataIndex] = Element{HashMapNode: &link}
+	case element.HashMapNode != nil:
 		// TODO: cache loading links
 		childNode, err := n.linkSystem.Load(
 			ipld.LinkContext{Ctx: context.TODO()},
-			element.x,
-			_HashMapNode__Prototype{},
+			*element.HashMapNode,
+			HashMapNodePrototype,
 		)
 		if err != nil {
 			return err
 		}
-		child := childNode.(*_HashMapNode)
+		child := bindnode.Unwrap(childNode).(*HashMapNode)
 
-		n.insertEntry(child, bitWidth, depth+1, hash, entry)
+		if err := n.insertEntry(child, bitWidth, depth+1, hash, entry); err != nil {
+			return err
+		}
 
 		link, err := n.linkSystem.Store(
 			ipld.LinkContext{Ctx: context.TODO()},
 			n.linkPrototype,
-			child,
+			childNode,
 		)
 		if err != nil {
 			return err
 		}
 
-		node.data.x[dataIndex].x = &_Link__HashMapNode{link}
+		node.Data[dataIndex] = Element{HashMapNode: &link}
 	default:
 		panic(fmt.Sprintf("unexpected element type: %T", element))
 	}
 	return nil
 }
 
-func lookupBucketEntry(entries []_BucketEntry, key []byte) (idx int, value _Any) {
+func lookupBucketEntry(entries Bucket, key []byte) (idx int, value ipld.Node) {
 	// TODO: to better support large buckets, should this be a
-	// binary search?
+	//       binary search?
 	for i, entry := range entries {
-		if bytes.Equal(entry.key.x, key) {
-			return i, entry.value
+		if bytes.Equal(entry.Key, key) {
+			return i, entry.Value
 		}
 	}
-	return -1, _Any{}
+	return -1, nil
 }
 
-func (n *Node) lookupValue(node *_HashMapNode, bitWidth, depth int, hash, key []byte) (ipld.Node, error) {
+func (n *Node) lookupValue(node *HashMapNode, bitWidth, depth int, hash, key []byte) (ipld.Node, error) {
 	from := depth * bitWidth
 	index := rangedInt(hash, from, from+bitWidth)
 
 	var exists bool
 	if n.modeFilecoin {
-		exists = bitsetGetv3(node._map.x, index)
+		exists = bitsetGetv3(node.Map, index)
 	} else {
-		exists = bitsetGet(node._map.x, index)
+		exists = bitsetGet(node.Map, index)
 	}
 	if !exists {
 		return nil, nil
 	}
 	var dataIndex int
 	if n.modeFilecoin {
-		dataIndex = onesCountRangev3(node._map.x, index)
+		dataIndex = onesCountRangev3(node.Map, index)
 	} else {
-		dataIndex = onesCountRange(node._map.x, index)
+		dataIndex = onesCountRange(node.Map, index)
 	}
-	switch element := node.data.x[dataIndex].x.(type) {
-	case *_Bucket:
-		i, value := lookupBucketEntry(element.x, key)
+
+	element := node.Data[dataIndex]
+	switch {
+	case element.Bucket != nil:
+		i, value := lookupBucketEntry(*element.Bucket, key)
 		if i >= 0 {
-			return value.Representation(), nil
+			return value, nil
 		}
-	case *_Link__HashMapNode:
+	case element.HashMapNode != nil:
 		// TODO: cache loading links
 		childNode, err := n.linkSystem.Load(
 			ipld.LinkContext{Ctx: context.TODO()},
-			element.x,
-			_HashMapNode__Prototype{},
+			*element.HashMapNode,
+			HashMapNodePrototype,
 		)
 		if err != nil {
 			return nil, err
 		}
-		child := childNode.(*_HashMapNode)
+		child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
+		if !ok {
+			return nil, fmt.Errorf("unexpected node type: %v", childNode)
+		}
 		return n.lookupValue(child, bitWidth, depth+1, hash, key)
 	default:
 		panic(fmt.Sprintf("unknown element type: %T", element))

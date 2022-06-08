@@ -1,8 +1,8 @@
 package hamt_test
 
 import (
-	"bytes"
 	"encoding/hex"
+	"github.com/ipld/go-ipld-prime"
 	"io"
 	"testing"
 
@@ -25,8 +25,6 @@ func (c cborString) MarshalCBOR(w io.Writer) error {
 }
 
 func TestFilecoinBasic(t *testing.T) {
-	buf := new(bytes.Buffer)
-
 	_ = cborString("") // don't let the type go unused
 
 	// Below is the code we used with go-hamt-ipld to produce a HAMT encoded
@@ -63,10 +61,8 @@ func TestFilecoinBasic(t *testing.T) {
 
 	// TODO: can we do better than these type asserts?
 	node := builder.Build().(*hamt.Node)
-	nodeRepr := node.Substrate().(hamt.HashMapNode).Representation()
-	buf.Reset()
-	qt.Assert(t, dagcbor.Encode(nodeRepr, buf), qt.IsNil)
-	enc := buf.Bytes()
+	enc, err := ipld.Encode(node.Substrate(), dagcbor.Encode)
+	qt.Assert(t, err, qt.IsNil)
 	t.Logf("go-ipld-adl-hamt: %x", fenc)
 
 	qt.Assert(t, enc, qt.DeepEquals, fenc)
