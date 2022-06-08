@@ -103,11 +103,11 @@ func (b *Builder) BeginMap(sizeHint int64) (ipld.MapAssembler, error) {
 	default:
 		return nil, fmt.Errorf("unsupported hash algorithm: %x", b.hashAlg)
 	}
-	b.node._HashMapRoot = _HashMapRoot{
-		hashAlg:    _Int{int64(b.hashAlg)},
-		bucketSize: _Int{int64(b.bucketSize)},
-		hamt: _HashMapNode{
-			_map: _Bytes{make([]byte, 1<<(b.bitWidth-3))},
+	b.node.HashMapRoot = HashMapRoot{
+		HashAlg:    b.hashAlg,
+		BucketSize: b.bucketSize,
+		Hamt: HashMapNode{
+			Map: make([]byte, 1<<(b.bitWidth-3)),
 		},
 	}
 	return &assembler{node: b.node}, nil
@@ -146,11 +146,11 @@ func (a *assembler) Finish() error {
 }
 
 func (a *assembler) KeyPrototype() ipld.NodePrototype {
-	return _Bytes__Prototype{}
+	return basicnode.Prototype.Bytes
 }
 
 func (a *assembler) ValuePrototype(k string) ipld.NodePrototype {
-	return _Any__Prototype{}
+	return basicnode.Prototype.Any
 }
 
 type keyAssembler struct {
@@ -224,7 +224,7 @@ func (a valueAssembler) AssignNull() error {
 }
 
 func (a valueAssembler) AssignBool(b bool) error {
-	builder := _Any__ReprPrototype{}.NewBuilder()
+	builder := basicnode.Prototype.Any.NewBuilder()
 	if err := builder.AssignBool(b); err != nil {
 		return err
 	}
@@ -232,7 +232,7 @@ func (a valueAssembler) AssignBool(b bool) error {
 }
 
 func (a valueAssembler) AssignInt(i int64) error {
-	builder := _Any__ReprPrototype{}.NewBuilder()
+	builder := basicnode.Prototype.Any.NewBuilder()
 	if err := builder.AssignInt(i); err != nil {
 		return err
 	}
@@ -240,7 +240,7 @@ func (a valueAssembler) AssignInt(i int64) error {
 }
 
 func (a valueAssembler) AssignFloat(f float64) error {
-	builder := _Any__ReprPrototype{}.NewBuilder()
+	builder := basicnode.Prototype.Any.NewBuilder()
 	if err := builder.AssignFloat(f); err != nil {
 		return err
 	}
@@ -248,7 +248,7 @@ func (a valueAssembler) AssignFloat(f float64) error {
 }
 
 func (a valueAssembler) AssignString(s string) error {
-	builder := _Any__ReprPrototype{}.NewBuilder()
+	builder := basicnode.Prototype.Any.NewBuilder()
 	if err := builder.AssignString(s); err != nil {
 		return err
 	}
@@ -256,7 +256,7 @@ func (a valueAssembler) AssignString(s string) error {
 }
 
 func (a valueAssembler) AssignBytes(b []byte) error {
-	builder := _Any__ReprPrototype{}.NewBuilder()
+	builder := basicnode.Prototype.Any.NewBuilder()
 	if err := builder.AssignBytes(b); err != nil {
 		return err
 	}
@@ -264,15 +264,14 @@ func (a valueAssembler) AssignBytes(b []byte) error {
 }
 
 func (a valueAssembler) AssignLink(l ipld.Link) error {
-	builder := _Any__ReprPrototype{}.NewBuilder()
+	builder := basicnode.Prototype.Any.NewBuilder()
 	if err := builder.AssignLink(l); err != nil {
 		return err
 	}
 	return a.AssignNode(builder.Build())
 }
 
-func (a valueAssembler) AssignNode(v ipld.Node) error {
-	val := v.(*_Any)
+func (a valueAssembler) AssignNode(val ipld.Node) error {
 
 	key := a.parent.assemblingKey
 	if a.parent.assemblingKey == nil {
@@ -281,10 +280,8 @@ func (a valueAssembler) AssignNode(v ipld.Node) error {
 	a.parent.assemblingKey = nil
 	node := a.parent.node
 	hash := node.hashKey(key)
-
-	return node.insertEntry(&node.hamt, node.bitWidth(), 0, hash, _BucketEntry{
-		_Bytes{key}, *val,
-	})
+	entry := BucketEntry{Key: key, Value: val}
+	return node.insertEntry(&node.Hamt, node.bitWidth(), 0, hash, entry)
 }
 
 func (valueAssembler) Prototype() ipld.NodePrototype {

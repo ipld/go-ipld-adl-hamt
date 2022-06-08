@@ -2,6 +2,7 @@ package hamt
 
 import (
 	"github.com/ipld/go-ipld-prime"
+	"github.com/ipld/go-ipld-prime/node/bindnode"
 )
 
 // Reify looks at an ipld Node and tries to interpret it as a HAMT;
@@ -22,9 +23,9 @@ func (n *Node) Substrate() ipld.Node {
 	if n.modeFilecoin {
 		// A Filecoin v3 HAMT is encoded as just the root node, without
 		// the config parameters.
-		return &n.hamt
+		return bindnode.Wrap(&(n.Hamt), HashMapNodePrototype.Type())
 	}
 	// An IPLD spec HAMT is encoded including an extra root node which
 	// includes explicit config parameters.
-	return &n._HashMapRoot
+	return bindnode.Wrap(&(n.HashMapRoot), HashMapRootPrototype.Type())
 }
