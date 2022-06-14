@@ -12,7 +12,9 @@ import (
 	"github.com/ipld/go-ipld-prime"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
+	"github.com/ipld/go-ipld-prime/storage/memstore"
 	"github.com/multiformats/go-multicodec"
+	"github.com/multiformats/go-multihash"
 )
 
 func TestBasic(t *testing.T) {
@@ -283,6 +285,68 @@ func TestIterator(t *testing.T) {
 		seen[key] = seen[key] + 1
 	}
 	qt.Assert(t, gotNumber, qt.Equals, number)
+}
+
+func TestIteratorWithLinks(t *testing.T) {
+	t.Parallel()
+
+	ls := cidlink.DefaultLinkSystem()
+	store := &memstore.Store{}
+	ls.SetWriteStorage(store)
+	ls.SetReadStorage(store)
+
+	lp := cidlink.LinkPrototype{
+		Prefix: cid.Prefix{
+			Version:  1,
+			Codec:    cid.DagCBOR,
+			MhType:   multihash.SHA2_256,
+			MhLength: -1,
+		},
+	}
+
+	builder := NewBuilder(Prototype{}).WithLinking(ls, lp)
+	assembler, err := builder.BeginMap(0)
+	qt.Assert(t, err, qt.IsNil)
+
+	// Pick a sufficiently large number so that we end up with links and buckets.
+	const wantEntryCount = int64(500)
+
+	wantEntries := make(map[string]string)
+	for i := int64(0); i < wantEntryCount; i++ {
+		key := fmt.Sprintf("key-%02d", i)
+		value := fmt.Sprintf("value-%02d", i)
+		qt.Assert(t, assembler.AssembleKey().AssignString(key), qt.IsNil)
+		qt.Assert(t, assembler.AssembleValue().AssignString(value), qt.IsNil)
+		wantEntries[key] = value
+	}
+	qt.Assert(t, assembler.Finish(), qt.IsNil)
+
+	node := builder.Build()
+
+	qt.Assert(t, node.Length(), qt.Equals, wantEntryCount)
+
+	gotEntryCount := int64(0)
+	iter := node.MapIterator()
+	for !iter.Done() {
+		gotKn, gotVn, err := iter.Next()
+		qt.Assert(t, err, qt.IsNil)
+		if gotEntryCount++; gotEntryCount > wantEntryCount {
+			t.Logf("stopping iteration since found more than the expected entry count")
+			break
+		}
+		key := basicValue(t, gotKn).(string)
+
+		wantVal, ok := wantEntries[key]
+		qt.Assert(t, ok, qt.IsTrue)
+
+		gotVal := basicValue(t, gotVn)
+		qt.Assert(t, gotVal, qt.Equals, wantVal)
+
+		// Delete so that we can assert the map iterator returns each key exactly once.
+		delete(wantEntries, key)
+	}
+	qt.Assert(t, len(wantEntries), qt.Equals, 0)
+	qt.Assert(t, gotEntryCount, qt.Equals, wantEntryCount)
 }
 
 func TestBuilder(t *testing.T) {

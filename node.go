@@ -96,6 +96,7 @@ func (*Node) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 
 func (n *Node) MapIterator() ipld.MapIterator {
 	return &nodeIterator{
+		ls:               n.linkSystem,
 		modeFilecoin:     n.modeFilecoin,
 		nodeIteratorStep: nodeIteratorStep{node: &n.Hamt},
 	}
@@ -118,6 +119,11 @@ type nodeIterator struct {
 	nodeIteratorStep
 
 	next *BucketEntry
+	ls   ipld.LinkSystem
+
+	// doneErr stores errors that may occur during Done call, which are later returned by the call
+	// to Next. See MapIterator.Done.
+	doneErr error
 }
 
 func (t *nodeIterator) Done() bool {
@@ -179,15 +185,38 @@ func (t *nodeIterator) Done() bool {
 	case element.Bucket != nil:
 		t.bucket = element.Bucket
 		t.bucketIndex = 1
-
 		t.next = &(*element.Bucket)[0]
 		return false
+	case element.HashMapNode != nil:
+		childNode, err := t.ls.Load(
+			ipld.LinkContext{Ctx: context.TODO()},
+			*element.HashMapNode,
+			HashMapNodePrototype,
+		)
+		if err != nil {
+			t.doneErr = fmt.Errorf("failed to load child node from linksystem: %w", err)
+			return false
+		}
+		child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
+		if !ok {
+			t.doneErr = fmt.Errorf("failed to unwrap child node: %w", err)
+			return false
+		}
+		t.parents = append(t.parents, nodeIteratorStep{node: child})
+		return t.Done()
 	default:
-		panic(fmt.Sprintf("unexpected element type: %v", element))
+		t.doneErr = fmt.Errorf("unexpected element type: %v", element)
+		return false
 	}
 }
 
 func (t *nodeIterator) Next() (key, value ipld.Node, _ error) {
+
+	// Check if any errors were encountered during call to Done.
+	if t.doneErr != nil {
+		return nil, nil, t.doneErr
+	}
+
 	if t.next == nil {
 		return nil, nil, ipld.ErrIteratorOverread{}
 	}
@@ -285,7 +314,7 @@ func (n *Node) hashKey(b []byte) []byte {
 	if n.modeFilecoin {
 		hasher = sha256.New()
 	} else {
-		switch c := multicodec.Code(n.HashAlg); c {
+		switch c := n.HashAlg; c {
 		case multicodec.Identity:
 			return b
 		case multicodec.Sha2_256:
