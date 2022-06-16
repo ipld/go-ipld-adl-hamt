@@ -95,11 +95,13 @@ func (*Node) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
 }
 
 func (n *Node) MapIterator() ipld.MapIterator {
-	return &nodeIterator{
-		ls:               n.linkSystem,
+	ni := &nodeIterator{
+		ls:               &n.linkSystem,
 		modeFilecoin:     n.modeFilecoin,
 		nodeIteratorStep: nodeIteratorStep{node: &n.Hamt},
 	}
+	ni.prepareNext()
+	return ni
 }
 
 type nodeIteratorStep struct {
@@ -119,20 +121,23 @@ type nodeIterator struct {
 	nodeIteratorStep
 
 	next *BucketEntry
-	ls   ipld.LinkSystem
+	ls   *ipld.LinkSystem
 
-	// doneErr stores errors that may occur during Done call, which are later returned by the call
-	// to Next. See MapIterator.Done.
-	doneErr error
+	// nextErr stores errors that may occur during nodeIterator.prepareNext call, which are later
+	// returned by the call to Next.
+	nextErr error
+	done    bool
 }
 
-func (t *nodeIterator) Done() bool {
+func (t *nodeIterator) prepareNext() {
+	t.next = nil
 	if t.bucket != nil {
 		// We are iterating over a bucket.
 		if t.bucketIndex < len(*t.bucket) {
 			t.next = &((*t.bucket)[t.bucketIndex])
 			t.bucketIndex++
-			return false
+			t.done = false
+			return
 		}
 		// We've done all entries in this bucket.
 		// Continue to the next element.
@@ -163,12 +168,14 @@ func (t *nodeIterator) Done() bool {
 		// If we're in a sub-node, continue iterating the parent.
 		// Otherwise, we're done.
 		if len(t.parents) == 0 {
-			return true
+			t.done = true
+			return
 		}
 		parent := t.parents[len(t.parents)-1]
 		t.parents = t.parents[:len(t.parents)-1]
 		t.nodeIteratorStep = parent
-		return t.Done()
+		t.prepareNext()
+		return
 	}
 
 	var dataIndex int
@@ -183,15 +190,17 @@ func (t *nodeIterator) Done() bool {
 	element := t.node.Data[dataIndex]
 
 	if (element.Bucket == nil) == (element.HashMapNode == nil) {
-		t.doneErr = ErrMalformedHamt
-		return false
+		t.nextErr = ErrMalformedHamt
+		t.done = false
+		return
 	}
 
 	if element.Bucket != nil {
 		t.bucket = element.Bucket
 		t.bucketIndex = 1
 		t.next = &(*element.Bucket)[0]
-		return false
+		t.done = false
+		return
 	}
 
 	childNode, err := t.ls.Load(
@@ -200,23 +209,30 @@ func (t *nodeIterator) Done() bool {
 		HashMapNodePrototype,
 	)
 	if err != nil {
-		t.doneErr = fmt.Errorf("failed to load child node from linksystem: %w", err)
-		return false
+		t.nextErr = fmt.Errorf("failed to load child node from linksystem: %w", err)
+		t.done = false
+		return
 	}
+
 	child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
 	if !ok {
-		t.doneErr = fmt.Errorf("failed to unwrap child node: %w", err)
-		return false
+		t.nextErr = fmt.Errorf("failed to unwrap child node: %w", err)
+		t.done = false
+		return
 	}
 	t.parents = append(t.parents, nodeIteratorStep{node: child})
-	return t.Done()
+	t.prepareNext()
+}
+
+func (t *nodeIterator) Done() bool {
+	return t.done
 }
 
 func (t *nodeIterator) Next() (key, value ipld.Node, _ error) {
 
 	// Check if any errors were encountered during call to Done.
-	if t.doneErr != nil {
-		return nil, nil, t.doneErr
+	if t.nextErr != nil {
+		return nil, nil, t.nextErr
 	}
 
 	if t.next == nil {
@@ -228,7 +244,9 @@ func (t *nodeIterator) Next() (key, value ipld.Node, _ error) {
 	// So for now, return the key as a String node.
 	// TODO: revisit this if the state of pathing with mixed kind keys advances.
 	key = basicnode.NewString(string(t.next.Key))
-	return key, t.next.Value, nil
+	value = t.next.Value
+	t.prepareNext()
+	return key, value, nil
 }
 
 func (n *Node) Length() int64 {
