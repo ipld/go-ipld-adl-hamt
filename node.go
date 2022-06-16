@@ -181,33 +181,35 @@ func (t *nodeIterator) Done() bool {
 	t.mapIndex++
 
 	element := t.node.Data[dataIndex]
-	switch {
-	case element.Bucket != nil:
+
+	if (element.Bucket == nil) == (element.HashMapNode == nil) {
+		t.doneErr = ErrMalformedHamt
+		return false
+	}
+
+	if element.Bucket != nil {
 		t.bucket = element.Bucket
 		t.bucketIndex = 1
 		t.next = &(*element.Bucket)[0]
 		return false
-	case element.HashMapNode != nil:
-		childNode, err := t.ls.Load(
-			ipld.LinkContext{Ctx: context.TODO()},
-			*element.HashMapNode,
-			HashMapNodePrototype,
-		)
-		if err != nil {
-			t.doneErr = fmt.Errorf("failed to load child node from linksystem: %w", err)
-			return false
-		}
-		child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
-		if !ok {
-			t.doneErr = fmt.Errorf("failed to unwrap child node: %w", err)
-			return false
-		}
-		t.parents = append(t.parents, nodeIteratorStep{node: child})
-		return t.Done()
-	default:
-		t.doneErr = fmt.Errorf("unexpected element type: %v", element)
+	}
+
+	childNode, err := t.ls.Load(
+		ipld.LinkContext{Ctx: context.TODO()},
+		*element.HashMapNode,
+		HashMapNodePrototype,
+	)
+	if err != nil {
+		t.doneErr = fmt.Errorf("failed to load child node from linksystem: %w", err)
 		return false
 	}
+	child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
+	if !ok {
+		t.doneErr = fmt.Errorf("failed to unwrap child node: %w", err)
+		return false
+	}
+	t.parents = append(t.parents, nodeIteratorStep{node: child})
+	return t.Done()
 }
 
 func (t *nodeIterator) Next() (key, value ipld.Node, _ error) {
@@ -240,10 +242,14 @@ func (n *Node) Length() int64 {
 func (n *Node) count(node *HashMapNode, bitWidth, depth int) (int64, error) {
 	count := int64(0)
 	for _, element := range node.Data {
-		switch {
-		case element.Bucket != nil:
+
+		if (element.Bucket == nil) == (element.HashMapNode == nil) {
+			return 0, ErrMalformedHamt
+		}
+
+		if element.Bucket != nil {
 			count += int64(len(*element.Bucket))
-		case element.HashMapNode != nil:
+		} else {
 			// TODO: cache loading links
 			childNode, err := n.linkSystem.Load(
 				ipld.LinkContext{Ctx: context.TODO()},
@@ -262,8 +268,6 @@ func (n *Node) count(node *HashMapNode, bitWidth, depth int) (int64, error) {
 				return 0, err
 			}
 			count += childCount
-		default:
-			panic(fmt.Sprintf("unknown element type: %v", element))
 		}
 	}
 	return count, nil
@@ -361,8 +365,12 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 	}
 	// TODO: fix links up the chain too
 	element := node.Data[dataIndex]
-	switch {
-	case element.Bucket != nil:
+
+	if (element.Bucket == nil) == (element.HashMapNode == nil) {
+		return ErrMalformedHamt
+	}
+
+	if element.Bucket != nil {
 		bucket := *element.Bucket
 		if len(bucket) < n._bucketSize() {
 			i, _ := lookupBucketEntry(bucket, entry.Key)
@@ -376,7 +384,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 			}
 			element.Bucket = &bucket
 			node.Data[dataIndex] = element
-			break
+			return nil
 		}
 		child := &HashMapNode{
 			Map: make([]byte, 1<<(bitWidth-3)),
@@ -402,7 +410,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 			return err
 		}
 		node.Data[dataIndex] = Element{HashMapNode: &link}
-	case element.HashMapNode != nil:
+	} else {
 		// TODO: cache loading links
 		childNode, err := n.linkSystem.Load(
 			ipld.LinkContext{Ctx: context.TODO()},
@@ -428,8 +436,6 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 		}
 
 		node.Data[dataIndex] = Element{HashMapNode: &link}
-	default:
-		panic(fmt.Sprintf("unexpected element type: %T", element))
 	}
 	return nil
 }
@@ -466,29 +472,30 @@ func (n *Node) lookupValue(node *HashMapNode, bitWidth, depth int, hash, key []b
 	}
 
 	element := node.Data[dataIndex]
-	switch {
-	case element.Bucket != nil:
+	if (element.Bucket == nil) == (element.HashMapNode == nil) {
+		return nil, ErrMalformedHamt
+	}
+
+	if element.Bucket != nil {
 		i, value := lookupBucketEntry(*element.Bucket, key)
 		if i >= 0 {
 			return value, nil
 		}
-	case element.HashMapNode != nil:
-		// TODO: cache loading links
-		childNode, err := n.linkSystem.Load(
-			ipld.LinkContext{Ctx: context.TODO()},
-			*element.HashMapNode,
-			HashMapNodePrototype,
-		)
-		if err != nil {
-			return nil, err
-		}
-		child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
-		if !ok {
-			return nil, fmt.Errorf("unexpected node type: %v", childNode)
-		}
-		return n.lookupValue(child, bitWidth, depth+1, hash, key)
-	default:
-		panic(fmt.Sprintf("unknown element type: %T", element))
+		return nil, nil
 	}
-	return nil, nil
+
+	// TODO: cache loading links
+	childNode, err := n.linkSystem.Load(
+		ipld.LinkContext{Ctx: context.TODO()},
+		*element.HashMapNode,
+		HashMapNodePrototype,
+	)
+	if err != nil {
+		return nil, err
+	}
+	child, ok := bindnode.Unwrap(childNode).(*HashMapNode)
+	if !ok {
+		return nil, fmt.Errorf("unexpected node type: %v", childNode)
+	}
+	return n.lookupValue(child, bitWidth, depth+1, hash, key)
 }
