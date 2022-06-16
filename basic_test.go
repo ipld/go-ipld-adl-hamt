@@ -287,6 +287,71 @@ func TestIterator(t *testing.T) {
 	qt.Assert(t, gotNumber, qt.Equals, number)
 }
 
+func TestIterator_DoneDoesNotUpdateState(t *testing.T) {
+	t.Parallel()
+
+	builder := Prototype{}.NewBuilder()
+	assembler, err := builder.BeginMap(0)
+	qt.Assert(t, err, qt.IsNil)
+
+	const entryCount = 2
+	wantMap := make(map[string]string)
+	for i := 0; i < entryCount; i++ {
+		key := fmt.Sprintf("key-%02d", i)
+		value := fmt.Sprintf("value-%02d", i)
+		qt.Assert(t, assembler.AssembleKey().AssignString(key), qt.IsNil)
+		qt.Assert(t, assembler.AssembleValue().AssignString(value), qt.IsNil)
+		wantMap[key] = value
+	}
+	qt.Assert(t, assembler.Finish(), qt.IsNil)
+
+	node := builder.Build()
+	qt.Assert(t, node.Length(), qt.Equals, int64(entryCount))
+
+	iter := node.MapIterator()
+	// Assert repeated Done calls do not impact position of the iterator.
+	qt.Assert(t, iter.Done(), qt.IsFalse)
+	qt.Assert(t, iter.Done(), qt.IsFalse)
+	qt.Assert(t, iter.Done(), qt.IsFalse)
+	qt.Assert(t, iter.Done(), qt.IsFalse)
+
+	// Assert Next() element is as expected.
+	k1, v1, err := iter.Next()
+	qt.Assert(t, err, qt.IsNil)
+	gotK1, err := k1.AsString()
+	qt.Assert(t, err, qt.IsNil)
+	gotV1, err := v1.AsString()
+	qt.Assert(t, err, qt.IsNil)
+	wantV1, ok := wantMap[gotK1]
+	qt.Assert(t, ok, qt.IsTrue)
+	qt.Assert(t, gotV1, qt.Equals, wantV1)
+
+	// Without calling Done(), assert Next() element is as expected.
+	k2, v2, err := iter.Next()
+	qt.Assert(t, err, qt.IsNil)
+	gotK2, err := k2.AsString()
+	qt.Assert(t, err, qt.IsNil)
+	gotV2, err := v2.AsString()
+	qt.Assert(t, err, qt.IsNil)
+	wantV2, ok := wantMap[gotK2]
+	qt.Assert(t, ok, qt.IsTrue)
+	qt.Assert(t, gotV2, qt.Equals, wantV2)
+
+	// There should only be 2 entries in the map; assert that the iterator is done.
+	qt.Assert(t, iter.Done(), qt.IsTrue)
+
+	// Assert that the iterator remains done.
+	qt.Assert(t, iter.Done(), qt.IsTrue)
+	qt.Assert(t, iter.Done(), qt.IsTrue)
+	qt.Assert(t, iter.Done(), qt.IsTrue)
+
+	// Assert that calling next is error
+	k3, v3, err := iter.Next()
+	qt.Assert(t, k3, qt.IsNil)
+	qt.Assert(t, v3, qt.IsNil)
+	qt.Assert(t, err, qt.Equals, ipld.ErrIteratorOverread{})
+}
+
 func TestIteratorWithLinks(t *testing.T) {
 	t.Parallel()
 
