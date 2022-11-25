@@ -89,7 +89,7 @@ func (n *Node) LookupByString(s string) (ipld.Node, error) {
 		return nil, err
 	}
 	if nd == nil {
-		return nil, schema.ErrNoSuchField{Type: nil /*TODO*/, Field: ipld.PathSegmentOfString(s)}
+		return nil, datamodel.ErrNotExists{Segment: datamodel.PathSegmentOfString(s)}
 	}
 	return nd, nil
 }
