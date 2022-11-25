@@ -14,6 +14,7 @@ import (
 	basicnode "github.com/ipld/go-ipld-prime/node/basic"
 	"github.com/ipld/go-ipld-prime/node/bindnode"
 	"github.com/ipld/go-ipld-prime/node/mixins"
+	"github.com/ipld/go-ipld-prime/schema"
 	"github.com/multiformats/go-multicodec"
 	"github.com/twmb/murmur3"
 )
@@ -83,7 +84,14 @@ func (*Node) Kind() ipld.Kind {
 func (n *Node) LookupByString(s string) (ipld.Node, error) {
 	key := []byte(s)
 	hk := n.hashKey(key)
-	return n.lookupValue(&n.Hamt, n.bitWidth(), 0, hk, key)
+	nd, err := n.lookupValue(&n.Hamt, n.bitWidth(), 0, hk, key)
+	if err != nil {
+		return nil, err
+	}
+	if nd == nil {
+		return nil, schema.ErrNoSuchField{Type: nil /*TODO*/, Field: ipld.PathSegmentOfString(s)}
+	}
+	return nd, nil
 }
 
 func (n *Node) LookupByNode(key ipld.Node) (ipld.Node, error) {
@@ -210,7 +218,7 @@ func (t *nodeIterator) prepareNext() {
 	childNode, err := t.ls.Load(
 		ipld.LinkContext{Ctx: context.TODO()},
 		*element.HashMapNode,
-		HashMapNodePrototype,
+		HashMapNodePrototype.Representation(),
 	)
 	if err != nil {
 		t.nextErr = fmt.Errorf("failed to load child node from linksystem: %w", err)
@@ -276,7 +284,7 @@ func (n *Node) count(node *HashMapNode, bitWidth, depth int) (int64, error) {
 			childNode, err := n.linkSystem.Load(
 				ipld.LinkContext{Ctx: context.TODO()},
 				*element.HashMapNode,
-				HashMapNodePrototype,
+				HashMapNodePrototype.Representation(),
 			)
 			if err != nil {
 				return 0, err
@@ -426,7 +434,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 		link, err := n.linkSystem.Store(
 			ipld.LinkContext{Ctx: context.TODO()},
 			n.linkPrototype,
-			childNode,
+			childNode.Representation(),
 		)
 		if err != nil {
 			return err
@@ -437,7 +445,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 		childNode, err := n.linkSystem.Load(
 			ipld.LinkContext{Ctx: context.TODO()},
 			*element.HashMapNode,
-			HashMapNodePrototype,
+			HashMapNodePrototype.Representation(),
 		)
 		if err != nil {
 			return err
@@ -451,7 +459,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 		link, err := n.linkSystem.Store(
 			ipld.LinkContext{Ctx: context.TODO()},
 			n.linkPrototype,
-			childNode,
+			childNode.(schema.TypedNode).Representation(),
 		)
 		if err != nil {
 			return err
@@ -510,7 +518,7 @@ func (n *Node) lookupValue(node *HashMapNode, bitWidth, depth int, hash, key []b
 	childNode, err := n.linkSystem.Load(
 		ipld.LinkContext{Ctx: context.TODO()},
 		*element.HashMapNode,
-		HashMapNodePrototype,
+		HashMapNodePrototype.Representation(),
 	)
 	if err != nil {
 		return nil, err
