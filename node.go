@@ -86,12 +86,16 @@ func (n *Node) LookupByString(s string) (ipld.Node, error) {
 	return n.lookupValue(&n.Hamt, n.bitWidth(), 0, hk, key)
 }
 
-func (*Node) LookupByNode(ipld.Node) (ipld.Node, error) {
-	panic("TODO")
+func (n *Node) LookupByNode(key ipld.Node) (ipld.Node, error) {
+	ks, err := key.AsString()
+	if err != nil {
+		return nil, err
+	}
+	return n.LookupByString(ks)
 }
 
-func (*Node) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
-	panic("TODO")
+func (n *Node) LookupBySegment(seg ipld.PathSegment) (ipld.Node, error) {
+	return n.LookupByString(seg.String())
 }
 
 func (n *Node) MapIterator() ipld.MapIterator {
