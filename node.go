@@ -141,6 +141,13 @@ type nodeIterator struct {
 	done    bool
 }
 
+func (t *nodeIterator) nodePrototype(node schema.TypedPrototype) datamodel.NodePrototype {
+	if t.modeFilecoin {
+		return node.Representation()
+	}
+	return node
+}
+
 func (t *nodeIterator) prepareNext() {
 	t.next = nil
 	if t.bucket != nil {
@@ -218,7 +225,7 @@ func (t *nodeIterator) prepareNext() {
 	childNode, err := t.ls.Load(
 		ipld.LinkContext{Ctx: context.TODO()},
 		*element.HashMapNode,
-		HashMapNodePrototype.Representation(),
+		t.nodePrototype(HashMapNodePrototype),
 	)
 	if err != nil {
 		t.nextErr = fmt.Errorf("failed to load child node from linksystem: %w", err)
@@ -284,7 +291,7 @@ func (n *Node) count(node *HashMapNode, bitWidth, depth int) (int64, error) {
 			childNode, err := n.linkSystem.Load(
 				ipld.LinkContext{Ctx: context.TODO()},
 				*element.HashMapNode,
-				HashMapNodePrototype.Representation(),
+				n.nodePrototype(HashMapNodePrototype),
 			)
 			if err != nil {
 				return 0, err
@@ -365,6 +372,24 @@ func (n *Node) hashKey(b []byte) []byte {
 	return hasher.Sum(nil)
 }
 
+func (n *Node) nodePrototype(node schema.TypedPrototype) datamodel.NodePrototype {
+	if n.modeFilecoin {
+		return node.Representation()
+	}
+	return node
+}
+
+func (n *Node) typedNode(node datamodel.Node) datamodel.Node {
+	if n.modeFilecoin {
+		nd, ok := node.(schema.TypedNode)
+		if !ok {
+			return node
+		}
+		return nd.Representation()
+	}
+	return node
+}
+
 func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, entry BucketEntry) error {
 	from := depth * bitWidth
 	index := rangedInt(hash, from, from+bitWidth)
@@ -434,7 +459,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 		link, err := n.linkSystem.Store(
 			ipld.LinkContext{Ctx: context.TODO()},
 			n.linkPrototype,
-			childNode.Representation(),
+			n.typedNode(childNode),
 		)
 		if err != nil {
 			return err
@@ -445,7 +470,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 		childNode, err := n.linkSystem.Load(
 			ipld.LinkContext{Ctx: context.TODO()},
 			*element.HashMapNode,
-			HashMapNodePrototype.Representation(),
+			n.nodePrototype(HashMapNodePrototype),
 		)
 		if err != nil {
 			return err
@@ -459,7 +484,7 @@ func (n *Node) insertEntry(node *HashMapNode, bitWidth, depth int, hash []byte, 
 		link, err := n.linkSystem.Store(
 			ipld.LinkContext{Ctx: context.TODO()},
 			n.linkPrototype,
-			childNode.(schema.TypedNode).Representation(),
+			n.typedNode(childNode),
 		)
 		if err != nil {
 			return err
@@ -518,7 +543,7 @@ func (n *Node) lookupValue(node *HashMapNode, bitWidth, depth int, hash, key []b
 	childNode, err := n.linkSystem.Load(
 		ipld.LinkContext{Ctx: context.TODO()},
 		*element.HashMapNode,
-		HashMapNodePrototype.Representation(),
+		n.nodePrototype(HashMapNodePrototype),
 	)
 	if err != nil {
 		return nil, err
