@@ -2,6 +2,7 @@ package hamt_test
 
 import (
 	"encoding/hex"
+	"fmt"
 	"io"
 	"os"
 	"path"
@@ -139,26 +140,46 @@ func TestFilecoinAdtMap(t *testing.T) {
 	}
 	nd.Hamt = *hmn
 
-	// id address #39
-	addrKey, err := hex.DecodeString("0027")
-	if err != nil {
-		t.Fatal(err)
+	testCases := []struct {
+		input    string
+		expected int64
+	}{
+		// id address #39, which is the first element in a leaf, one step from the root of this fixture.
+		{"0027", 39},
+		// Middle of the other leaf.
+		{"0001", 1},
+		// At the end of the root block.
+		{"000c", 12},
 	}
 
-	val, err := nd.LookupByString(string(addrKey))
-	if err != nil {
-		t.Fatal(err)
-	}
+	for _, tc := range testCases {
+		tc := tc
 
-	// Actor CallSeqNum
-	sn, err := val.LookupByIndex(2)
-	if err != nil {
-		t.Fatal(err)
-	}
-	num, err := sn.AsInt()
-	if err != nil {
-		t.Fatal(err)
-	}
+		t.Run(fmt.Sprintf("testing for id: %d", tc.expected), func(t *testing.T) {
 
-	qt.Assert(t, int64(39), qt.Equals, num)
+			addrKey, err := hex.DecodeString(tc.input)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			val, err := nd.LookupByString(string(addrKey))
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			// Actor CallSeqNum
+			sn, err := val.LookupByIndex(2)
+			if err != nil {
+				t.Fatal(err)
+			}
+			num, err := sn.AsInt()
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			qt.Assert(t, tc.expected, qt.Equals, num)
+
+		})
+
+	}
 }
