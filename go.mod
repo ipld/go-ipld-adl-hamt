@@ -2,7 +2,6 @@ module github.com/ipld/go-ipld-adl-hamt
 
 go 1.21
 
-
 require (
 	github.com/frankban/quicktest v1.14.3
 	github.com/google/go-cmp v0.5.8
