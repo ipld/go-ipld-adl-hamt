@@ -1,6 +1,6 @@
 module github.com/ipld/go-ipld-adl-hamt
 
-go 1.22
+go 1.23
 
 require (
 	github.com/frankban/quicktest v1.14.3
